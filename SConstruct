@@ -2,5 +2,5 @@ import sys, os
 env = Environment(
 	ENV = {'PATH' : os.environ['PATH']}
 )
-classes = env.Java('bin', 'SQLEngine_A1/src')
-jar = env.Jar('sqlengine.jar', [classes, 'SQLEngine_A1/jar-manifest.txt'])
+classes = env.Java('bin', 'sqlengine_a1')
+jar = env.Jar('sqlengine.jar', [classes, 'sqlengine_a1/jar-manifest.txt'])

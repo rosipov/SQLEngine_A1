@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: sqlengine_a1.Console
+Main-Class: sqlengine_a1.SqlConsole
