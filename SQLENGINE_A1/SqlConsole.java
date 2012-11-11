@@ -16,6 +16,11 @@ public class SqlConsole {
 				
 				if (astRoot.type == ASTNode.Type.QUIT_STATEMENT)
 					return;
+				
+				if (astRoot.type == ASTNode.Type.EVAL_STATEMENT) {
+					ArbitraryExpression expr = new ArbitraryExpression(astRoot.subnodes.get("expression"));
+					System.out.println(expr.evaluate(null).toString());
+				}
 			}
 			catch (ParseError e) {
 				System.err.println("Parse error: " + e);

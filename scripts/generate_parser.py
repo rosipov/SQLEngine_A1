@@ -7,6 +7,7 @@ rule('Statement', OneOf(
 	'InsertStatement', 'SelectStatement',
 	'DropTableStatement', 'CreateTableStatement',
 	'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement',
+	'EvalStatement',
 	'QuitStatement'))
 
 rule('InsertStatement', Sequence(
@@ -35,8 +36,10 @@ rule('SelectStatement', Sequence(
 	('MaybeColumnSet', 'columns'),
 	'FromKeyword',
 	('Name', 'tablename'),
+	('MaybeWhereClause', 'where-clause'),
 	'Semicolon'))
 rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
+rule('MaybeWhereClause', OneOf('WhereClause', 'Epsilon'))
 
 rule('SaveStatement', Sequence(
 	'SaveOrCommitKeyword', Definite(),
@@ -63,6 +66,11 @@ rule('DropTableStatement', Sequence(
 	('Name', 'tablename'),
 	'Semicolon'))
 
+rule('EvalStatement', Sequence(
+	'EvalKeyword', Definite(),
+	('Expression', 'expression'),
+	'Semicolon'))
+
 rule('QuitStatement', Sequence(
 	'QuitKeyword', Definite(),
 	'Semicolon'))
@@ -78,7 +86,7 @@ rule('FieldDefList', OneOf(
 	Sequence(('FieldDef', 'this'), 'Comma', ('FieldDefList', 'next')),
 	'FieldDef'))
 rule('FieldDef', Sequence(
-	('Name', 'columnname'),
+	('Name', 'columnname'), Definite(),
 	('Name', 'type'),
 	('ColumnLength', 'length'),
 	('ColumnNullity', 'nullity')))
@@ -94,10 +102,24 @@ rule('ColumnNullity', OneOf(
 	'ColumnNotNullable',
 	'Epsilon'))
 
-rule('Expression', OneOf('String', 'Integer', 'Float', 'Name'))
+rule('WhereClause', Sequence(
+	'WhereKeyword', Definite(),
+	('Expression', 'condition')))
 
-for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL"):
+rule('Expression', OneOf('Comparison'))
+rule('Comparison', OneOf('LtComparison'))
+rule('LtComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'LtOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('GtComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'GtOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('EqComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'EqOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('NeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'NeOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('LeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'LeOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('GeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('SingleValue', OneOf('String', 'Integer', 'Float', 'Name'))
+
+for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
+for op in ('LT', 'GT', 'EQ', 'NE', 'LE', 'GE'):
+	rule(op.title() + 'Op', Operator(op))
 for terminal in ('Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk'):
 	rule(terminal, StaticTerminal(terminal))
 for terminal in ('Name', 'Integer', 'String', 'Float', 'Epsilon'):
