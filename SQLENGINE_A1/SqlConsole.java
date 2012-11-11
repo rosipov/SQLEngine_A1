@@ -9,11 +9,20 @@ public class SqlConsole {
 			String line = stdin.nextLine();
 			if (line.equalsIgnoreCase("quit"))
 				break;
-			SqlTokenizer st = new SqlTokenizer(line);
+			
+			/*SqlTokenizer st = new SqlTokenizer(line);
 			Token token;
 			try {
 				while ((token = st.nextToken()) != null)
 					System.out.println(token.toString());
+			}
+			catch (ParseError e) {
+				System.err.println("Parse error: " + e);
+			}*/
+			
+			try {
+				SqlParser sp = new SqlParser(line);
+				System.out.println(sp.parseStatement().toString());
 			}
 			catch (ParseError e) {
 				System.err.println("Parse error: " + e);

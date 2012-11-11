@@ -13,6 +13,14 @@ public class SqlTokenizer {
 		this.position = 0;
 	}
 	
+	public Vector<Token> getAllTokens() throws ParseError {
+		Vector<Token> rv = new Vector<Token>();
+		Token t;
+		while ((t = nextToken()) != null)
+			rv.add(t);
+		return rv;
+	}
+	
 	public Token nextToken() throws ParseError {
 		String s = nextTokenAsString();
 		if (s == null)
@@ -27,6 +35,8 @@ public class SqlTokenizer {
 			t.type = Token.Type.SEMICOLON;
 		else if (s.equals(","))
 			t.type = Token.Type.COMMA;
+		else if (s.equals("*"))
+			t.type = Token.Type.ASTERISK;
 		else if (s.charAt(0) == '"' || s.charAt(0) == '\'') {
 			t.text = t.text.substring(1, t.text.length() - 1);
 			t.type = Token.Type.STRING;
@@ -59,7 +69,7 @@ public class SqlTokenizer {
 		
 		try {
 			char c = str.charAt(position++);
-			if (c == '(' || c == ')' || c == ';' || c == ',') {
+			if (c == '(' || c == ')' || c == ';' || c == ',' || c == '*') {
 				return Character.toString(c);
 			}
 			else if (c == '"') {
