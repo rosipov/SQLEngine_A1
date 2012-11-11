@@ -40,17 +40,7 @@ public class Int extends Data
 	
 	public String toString()
 	{
-		String output = "" + data;
-		if(output.length()<=length)
-		{
-			int realLength = output.length();
-			for(int i=0; i<(length-realLength); i++)
-			{
-				output += "_";
-			}
-		}
-		
-		return output;
+		return data + "";
 	}
 	
 }
