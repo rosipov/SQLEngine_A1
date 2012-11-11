@@ -5,3 +5,15 @@ public class ParseError extends Exception {
 		super(s);
 	}
 }
+
+class MaybeParseError extends ParseError {
+	public MaybeParseError(String s) {
+		super(s);
+	}
+}
+
+class DefiniteParseError extends ParseError {
+	public DefiniteParseError(String s) {
+		super(s);
+	}
+}
