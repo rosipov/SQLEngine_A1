@@ -5,7 +5,7 @@ public class SqlTokenizer {
 	private String str;
 	private int position;
 	private final String[] allKeywords = {
-		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL"
+		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL"
 	};
 	
 	public SqlTokenizer(String str) {
@@ -37,6 +37,18 @@ public class SqlTokenizer {
 			t.type = Token.Type.COMMA;
 		else if (s.equals("*"))
 			t.type = Token.Type.ASTERISK;
+		else if (s.equals("<"))
+			t.type = Token.Type.OP_LT;
+		else if (s.equals(">"))
+			t.type = Token.Type.OP_GT;
+		else if (s.equals("=="))
+			t.type = Token.Type.OP_EQ;
+		else if (s.equals("!="))
+			t.type = Token.Type.OP_NE;
+		else if (s.equals("<="))
+			t.type = Token.Type.OP_LE;
+		else if (s.equals(">="))
+			t.type = Token.Type.OP_GE;
 		else if (s.charAt(0) == '"' || s.charAt(0) == '\'') {
 			t.text = t.text.substring(1, t.text.length() - 1);
 			t.type = Token.Type.STRING;
@@ -83,6 +95,34 @@ public class SqlTokenizer {
 				while ((c = str.charAt(position++)) != '\'')
 					sb.append(c);
 				return '\'' + sb.toString() + '\'';
+			}
+			else if (c == '<') {
+				if (str.charAt(position) == '=') {
+					position++;
+					return "<=";
+				}
+				else return "<";
+			}
+			else if (c == '>') {
+				if (str.charAt(position) == '=') {
+					position++;
+					return ">=";
+				}
+				else return ">";
+			}
+			else if (c == '!') {
+				if (str.charAt(position) == '=') {
+					position++;
+					return "!=";
+				}
+				else return "!";
+			}
+			else if (c == '=') {
+				if (str.charAt(position) == '=') {
+					position++;
+					return "==";
+				}
+				else return "=";
 			}
 			else if (Character.isDigit(c)) {
 				StringBuilder sb = new StringBuilder();

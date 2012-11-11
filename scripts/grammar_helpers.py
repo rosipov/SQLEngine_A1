@@ -93,6 +93,17 @@ class Keyword:
 		print 'return new ASTNode(ASTNode.Type.%s, "%s"); }' % (self.kw, self.kw)
 		print 'else throw new MaybeParseError("expected %s, got " + t);' % self.kw
 
+class Operator:
+	def __init__(self, op):
+		self.op = op
+	
+	def generate(self):
+		print 'Token t = tokens.get(position);'
+		print 'if (t.type == Token.Type.OP_%s) {' % self.op
+		print 'position++;'
+		print 'return new ASTNode(ASTNode.Type.OP_%s, t.text); }' % (self.op)
+		print 'else throw new MaybeParseError("expected %s, got " + t);' % self.op
+
 class Name:
 	def generate(self):
 		print 'Token t = tokens.get(position);'

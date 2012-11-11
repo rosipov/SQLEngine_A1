@@ -16,6 +16,11 @@ public class SqlConsole {
 				
 				if (astRoot.type == ASTNode.Type.QUIT_STATEMENT)
 					return;
+				
+				if (astRoot.type == ASTNode.Type.EVAL_STATEMENT) {
+					ArbitraryExpression expr = new ArbitraryExpression(astRoot.subnodes.get("expression"));
+					System.out.println(expr.evaluate(null).toString());
+				}
 			}
 			catch (ParseError e) {
 				System.err.println("Parse error: " + e);
@@ -23,14 +28,14 @@ public class SqlConsole {
 		}
 	}
 
-	public static int createTable(string tName, ArrayList<columnNode> inputArrayList) {	
+	/*public static int createTable(string tName, ArrayList<columnNode> inputArrayList) {	
 		Table aTable = new Table(tName);
 		for(int i = 0; i<inputArrayList.size(); i++) {
 			aTable.addColumn(inputArrayList.get(i));
 		}				
-	}
+	}*/
 }
-
+/*
 class columnNode {
 	private string columnName;
 	private string columnType;
@@ -75,3 +80,4 @@ class Table {
 		rowArray.add(data);
 	}
 }
+*/
