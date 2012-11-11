@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 import sys, os, re
-
-just_consume = ['Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk']
 
 def prelude():
 	print """
@@ -71,7 +68,7 @@ class Sequence:
 				else:
 					thing_name = None
 				
-				if thing in just_consume or thing_name is None:
+				if thing_name is None:
 					print 'try { parse%s(); }' % thing
 				else:
 					print 'try { ASTNode temp = parse%s(); if (temp != null) rv.subnodes.put("%s", temp); }' % (thing, thing_name)
@@ -140,49 +137,3 @@ class Float:
 class Epsilon:
 	def generate(self):
 		print 'return null;'
-
-prelude()
-
-rule('Statement', OneOf('InsertStatement', 'SelectStatement'))
-
-rule('InsertStatement', Sequence(
-	'InsertKeyword',
-	Definite(),
-	'IntoKeyword',
-	('Name', 'table-name'),
-	('MaybeInsertColumnList', 'columns'),
-	'ValuesKeyword',
-	('InsertRowList', 'rows'),
-	'Semicolon'))
-rule('MaybeInsertColumnList', OneOf('ParenthesizedInsertColumnList', 'Epsilon'))
-rule('ParenthesizedInsertColumnList', Sequence('OpenParen', ('ColumnList', 'columns'), 'CloseParen'))
-rule('ColumnList', OneOf(
-	Sequence(('Name', 'this'), 'Comma', ('ColumnList', 'next')),
-	'Name'))
-rule('InsertRowList', OneOf(
-	Sequence(('ParenthesizedInsertRow', 'this'), 'Comma', ('InsertRowList', 'next')),
-	'ParenthesizedInsertRow'))
-rule('ParenthesizedInsertRow', Sequence('OpenParen', ('InsertRow', 'values'), 'CloseParen'))
-rule('InsertRow', OneOf(
-	Sequence(('Expression', 'this'), 'Comma', ('InsertRow', 'next')),
-	'Expression'))
-
-rule('SelectStatement', Sequence(
-	'SelectKeyword',
-	Definite(),
-	('MaybeColumnSet', 'columns'),
-	'FromKeyword',
-	('Name', 'table-name'),
-	'Semicolon'))
-rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
-
-rule('Expression', OneOf('String', 'Integer', 'Float', 'Name'))
-
-for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE"):
-	rule(kw.title() + 'Keyword', Keyword(kw))
-for terminal in ('Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk'):
-	rule(terminal, StaticTerminal(terminal))
-for terminal in ('Name', 'Integer', 'String', 'Float', 'Epsilon'):
-	rule(terminal, globals()[terminal]())
-
-postlude()
