@@ -63,4 +63,8 @@ public class ASTNode {
 			rv.append(subnodes.get(k).toString(indent + 1, k));
 		return rv.toString();
 	}
+	
+	public ASTNode sub(String subName) {
+		return subnodes.get(subName);
+	}
 }

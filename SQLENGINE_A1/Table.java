@@ -20,4 +20,8 @@ public class Table {
 				return i;
 		return -1;
 	}
+	
+	public DbResult select(List<String> columnNames, ArbitraryExpression where) {
+		return new DbResult(null, 0);
+	}
 }
