@@ -1,4 +1,5 @@
 package sqlengine_a1;
+
 public class Int extends Data
 {
 	private int data;
