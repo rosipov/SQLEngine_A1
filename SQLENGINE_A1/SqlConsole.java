@@ -28,14 +28,14 @@ public class SqlConsole {
 		}
 	}
 
-	public static int createTable(string tName, ArrayList<columnNode> inputArrayList) {	
+	/*public static int createTable(string tName, ArrayList<columnNode> inputArrayList) {	
 		Table aTable = new Table(tName);
 		for(int i = 0; i<inputArrayList.size(); i++) {
 			aTable.addColumn(inputArrayList.get(i));
 		}				
-	}
+	}*/
 }
-
+/*
 class columnNode {
 	private string columnName;
 	private string columnType;
@@ -80,3 +80,4 @@ class Table {
 		rowArray.add(data);
 	}
 }
+*/

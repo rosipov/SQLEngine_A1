@@ -325,10 +325,15 @@ throw new MaybeParseError("expected one of ['Comparison'], next token is " + tok
 }
 public ASTNode parseComparison() throws ParseError {
 try { return parseLtComparison(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['LtComparison'], next token is " + tokens.get(position));
+try { return parseGtComparison(); } catch (MaybeParseError e) {}
+try { return parseEqComparison(); } catch (MaybeParseError e) {}
+try { return parseNeComparison(); } catch (MaybeParseError e) {}
+try { return parseLeComparison(); } catch (MaybeParseError e) {}
+try { return parseGeComparison(); } catch (MaybeParseError e) {}
+try { return parseSingleValue(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseLtComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.LT_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -338,12 +343,8 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseGtComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.GT_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -353,12 +354,8 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseEqComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.EQ_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -368,12 +365,8 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseNeComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.NE_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -383,12 +376,8 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseLeComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.LE_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -398,12 +387,8 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseGeComparison() throws ParseError {
-try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.GE_COMPARISON);
 try { ASTNode temp = parseSingleValue(); if (temp != null) rv.subnodes.put("lhs", temp); }
@@ -413,9 +398,6 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
-} catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SingleValue', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseSingleValue() throws ParseError {
 try { return parseString(); } catch (MaybeParseError e) {}

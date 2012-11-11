@@ -107,13 +107,13 @@ rule('WhereClause', Sequence(
 	('Expression', 'condition')))
 
 rule('Expression', OneOf('Comparison'))
-rule('Comparison', OneOf('LtComparison'))
-rule('LtComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'LtOp', ('Comparison', 'rhs')), 'SingleValue'))
-rule('GtComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'GtOp', ('Comparison', 'rhs')), 'SingleValue'))
-rule('EqComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'EqOp', ('Comparison', 'rhs')), 'SingleValue'))
-rule('NeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'NeOp', ('Comparison', 'rhs')), 'SingleValue'))
-rule('LeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'LeOp', ('Comparison', 'rhs')), 'SingleValue'))
-rule('GeComparison', OneOf(Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rhs')), 'SingleValue'))
+rule('Comparison', OneOf('LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'))
+rule('LtComparison', Sequence(('SingleValue', 'lhs'), 'LtOp', ('Comparison', 'rhs')))
+rule('GtComparison', Sequence(('SingleValue', 'lhs'), 'GtOp', ('Comparison', 'rhs')))
+rule('EqComparison', Sequence(('SingleValue', 'lhs'), 'EqOp', ('Comparison', 'rhs')))
+rule('NeComparison', Sequence(('SingleValue', 'lhs'), 'NeOp', ('Comparison', 'rhs')))
+rule('LeComparison', Sequence(('SingleValue', 'lhs'), 'LeOp', ('Comparison', 'rhs')))
+rule('GeComparison', Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rhs')))
 rule('SingleValue', OneOf('String', 'Integer', 'Float', 'Name'))
 
 for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL"):

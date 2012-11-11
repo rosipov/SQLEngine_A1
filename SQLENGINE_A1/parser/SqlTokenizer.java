@@ -97,28 +97,28 @@ public class SqlTokenizer {
 				return '\'' + sb.toString() + '\'';
 			}
 			else if (c == '<') {
-				if (str.charAt(position + 1) == '=') {
+				if (str.charAt(position) == '=') {
 					position++;
 					return "<=";
 				}
 				else return "<";
 			}
 			else if (c == '>') {
-				if (str.charAt(position + 1) == '=') {
+				if (str.charAt(position) == '=') {
 					position++;
 					return ">=";
 				}
 				else return ">";
 			}
 			else if (c == '!') {
-				if (str.charAt(position + 1) == '=') {
+				if (str.charAt(position) == '=') {
 					position++;
 					return "!=";
 				}
 				else return "!";
 			}
 			else if (c == '=') {
-				if (str.charAt(position + 1) == '=') {
+				if (str.charAt(position) == '=') {
 					position++;
 					return "==";
 				}

@@ -2,28 +2,6 @@ package sqlengine_a1;
 import java.util.*;
 import sqlengine_a1.parser.*;
 
-abstract class Data {
-	public abstract int compareTo(Data other);
-}
-
-class Int extends Data {
-	private int value;
-	
-	public Int(int value) {
-		this.value = value;
-	}
-
-	public int compareTo(Data other) {
-		if (!(other instanceof Int))
-			return 0;
-		return (((Int)other).value - this.value);
-	}
-	
-	public String toString() {
-		return Integer.toString(value);
-	}
-}
-
 class Row {
 	public Data getValue(String columnName) {
 		return new Int(4);
