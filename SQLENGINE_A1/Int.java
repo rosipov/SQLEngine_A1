@@ -1,10 +1,10 @@
-
+package sqlengine_a1;
 public class Int extends Data
 {
 	private int data;
 	
 	//create an int type with the data, and the length in digits of that data
-	public Int(int data, int length)
+	public Int(int data)
 	{
 		this.data = data;
 	}
