@@ -3,13 +3,11 @@ package sqlengine_a1;
 public class Int extends Data
 {
 	private int data;
-	private int length;
 	
 	//create an int type with the data, and the length in digits of that data
 	public Int(int data, int length)
 	{
 		this.data = data;
-		this.length = length;
 	}
 	
 	/**
@@ -28,28 +26,14 @@ public class Int extends Data
 		this.data = data;
 	}
 
-	/**
-	 * @return the length
-	 */
-	public int getLength()
-	{
-		return length;
-	}
 
-	/**
-	 * @param length the length to set
-	 */
-	public void setLength(int length)
-	{
-		this.length = length;
-	}
 
 	/*
 	 * if the length in digits of the data is longer than the length specified
 	 * return false
 	 * else return true
 	 */
-	public boolean isValid()
+	public boolean isValid(int length)
 	{
 		String testData = "" + data;
 		return !(testData.length()>length);
