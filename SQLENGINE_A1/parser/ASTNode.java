@@ -4,7 +4,8 @@ import java.util.*;
 public class ASTNode {
 	public enum Type {
 		INSERT_STATEMENT, INSERT_COLUMN_LIST, PARENTHESIZED_INSERT_COLUMN_LIST,
-		NAME,
+		INSERT_ROW_LIST, PARENTHESIZED_INSERT_ROW, INSERT_ROW,
+		NAME, INTEGER, STRING, FLOAT,
 		INSERT, SELECT, UPDATE, DROP, DELETE, CREATE, INTO, FROM, VALUES, TABLE, SAVE, COMMIT, LOAD, DATABASE,
 	}
 
@@ -12,6 +13,7 @@ public class ASTNode {
 	public Type type;
 	public String stringValue;
 	public int intValue;
+	public float floatValue;
 	
 	public ASTNode(Type type) {
 		this.type = type;
@@ -28,6 +30,11 @@ public class ASTNode {
 		this.intValue = i;
 	}
 	
+	public ASTNode(Type type, float i) {
+		this(type);
+		this.floatValue = i;
+	}
+	
 	public String toString() {
 		return toString(0, "(root node)");
 	}
@@ -36,7 +43,11 @@ public class ASTNode {
 		StringBuilder rv = new StringBuilder();
 		for (int i = 0; i < indent; i++)
 			rv.append("  ");
-		rv.append(nodeName + " = " + type.toString() + " { " + this.stringValue + " | " + this.intValue + " }\n");
+		rv.append(nodeName + " = " + type.toString() + " { " + (
+			this.type == Type.INTEGER? Integer.toString(this.intValue) :
+			this.type == Type.FLOAT? Float.toString(this.floatValue) :
+			this.stringValue
+		) + " }\n");
 		for (String k : subnodes.keySet())
 			rv.append(subnodes.get(k).toString(indent + 1, k));
 		return rv.toString();

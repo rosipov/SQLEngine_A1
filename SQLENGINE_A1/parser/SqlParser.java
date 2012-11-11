@@ -28,6 +28,8 @@ try { ASTNode temp = parseMaybeInsertColumnList(); if (temp != null) rv.subnodes
 catch (ParseError e) { position = savePos; throw e; }
 try { parseValuesKeyword(); }
 catch (ParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseInsertRowList(); if (temp != null) rv.subnodes.put("rows", temp); }
+catch (ParseError e) { position = savePos; throw e; }
 try { parseSemicolon(); }
 catch (ParseError e) { position = savePos; throw e; }
 return rv;
@@ -61,7 +63,55 @@ catch (ParseError e) { position = savePos; throw e; }
 return rv;
 } catch (ParseError e) {}
 try { return parseName(); } catch (ParseError e) {}
-throw new ParseError("expected one of (<__main__.Sequence instance at 0x0000000001E69388>, 'Name'), next token is " + tokens.get(position));
+throw new ParseError("expected one of (<__main__.Sequence instance at 0x0000000001EF9388>, 'Name'), next token is " + tokens.get(position));
+}
+public ASTNode parseInsertRowList() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.INSERT_ROW_LIST);
+try { ASTNode temp = parseParenthesizedInsertRow(); if (temp != null) rv.subnodes.put("this", temp); }
+catch (ParseError e) { position = savePos; throw e; }
+try { parseComma(); }
+catch (ParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseInsertRowList(); if (temp != null) rv.subnodes.put("next", temp); }
+catch (ParseError e) { position = savePos; throw e; }
+return rv;
+} catch (ParseError e) {}
+try { return parseParenthesizedInsertRow(); } catch (ParseError e) {}
+throw new ParseError("expected one of (<__main__.Sequence instance at 0x0000000001EF9388>, 'ParenthesizedInsertRow'), next token is " + tokens.get(position));
+}
+public ASTNode parseParenthesizedInsertRow() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.PARENTHESIZED_INSERT_ROW);
+try { parseOpenParen(); }
+catch (ParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseInsertRow(); if (temp != null) rv.subnodes.put("values", temp); }
+catch (ParseError e) { position = savePos; throw e; }
+try { parseCloseParen(); }
+catch (ParseError e) { position = savePos; throw e; }
+return rv;
+}
+public ASTNode parseInsertRow() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.INSERT_ROW);
+try { ASTNode temp = parseExpression(); if (temp != null) rv.subnodes.put("this", temp); }
+catch (ParseError e) { position = savePos; throw e; }
+try { parseComma(); }
+catch (ParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseInsertRow(); if (temp != null) rv.subnodes.put("next", temp); }
+catch (ParseError e) { position = savePos; throw e; }
+return rv;
+} catch (ParseError e) {}
+try { return parseExpression(); } catch (ParseError e) {}
+throw new ParseError("expected one of (<__main__.Sequence instance at 0x0000000001EF9388>, 'Expression'), next token is " + tokens.get(position));
+}
+public ASTNode parseExpression() throws ParseError {
+try { return parseString(); } catch (ParseError e) {}
+try { return parseInteger(); } catch (ParseError e) {}
+try { return parseFloat(); } catch (ParseError e) {}
+try { return parseName(); } catch (ParseError e) {}
+throw new ParseError("expected one of ('String', 'Integer', 'Float', 'Name'), next token is " + tokens.get(position));
 }
 public ASTNode parseInsertKeyword() throws ParseError {
 Token t = tokens.get(position);
@@ -186,6 +236,21 @@ else throw new ParseError("expected comma, got " + t);
 public void parseCloseParen() throws ParseError {
 Token t = tokens.get(position);
 if (t.type == Token.Type.CLOSE_PAREN) { position++; }
+else throw new ParseError("expected comma, got " + t);
+}
+public ASTNode parseInteger() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.INTEGER) { position++; return new ASTNode(ASTNode.Type.INTEGER, Integer.parseInt(t.text)); }
+else throw new ParseError("expected comma, got " + t);
+}
+public ASTNode parseString() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.STRING) { position++; return new ASTNode(ASTNode.Type.STRING, t.text); }
+else throw new ParseError("expected comma, got " + t);
+}
+public ASTNode parseFloat() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.FLOAT) { position++; return new ASTNode(ASTNode.Type.FLOAT, Float.parseFloat(t.text)); }
 else throw new ParseError("expected comma, got " + t);
 }
 public ASTNode parseEpsilon() throws ParseError {

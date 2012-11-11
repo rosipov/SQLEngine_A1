@@ -124,11 +124,30 @@ class CloseParen:
 		print 'if (t.type == Token.Type.CLOSE_PAREN) { position++; }'
 		print 'else throw new ParseError("expected comma, got " + t);'
 
+class Integer:
+	def generate(self):
+		print 'Token t = tokens.get(position);'
+		print 'if (t.type == Token.Type.INTEGER) { position++; return new ASTNode(ASTNode.Type.INTEGER, Integer.parseInt(t.text)); }'
+		print 'else throw new ParseError("expected comma, got " + t);'
+
+class String:
+	def generate(self):
+		print 'Token t = tokens.get(position);'
+		print 'if (t.type == Token.Type.STRING) { position++; return new ASTNode(ASTNode.Type.STRING, t.text); }'
+		print 'else throw new ParseError("expected comma, got " + t);'
+
+class Float:
+	def generate(self):
+		print 'Token t = tokens.get(position);'
+		print 'if (t.type == Token.Type.FLOAT) { position++; return new ASTNode(ASTNode.Type.FLOAT, Float.parseFloat(t.text)); }'
+		print 'else throw new ParseError("expected comma, got " + t);'
+		
 class Epsilon:
 	def generate(self):
 		print 'return null;'
 
 prelude()
+
 rule('Statement', OneOf('InsertStatement'))
 rule('InsertStatement', Sequence(
 	'InsertKeyword',
@@ -137,6 +156,7 @@ rule('InsertStatement', Sequence(
 	('Name', 'table-name'),
 	('MaybeInsertColumnList', 'columns'),
 	'ValuesKeyword',
+	('InsertRowList', 'rows'),
 	'Semicolon'))
 rule('MaybeInsertColumnList', OneOf('ParenthesizedInsertColumnList', 'Epsilon'))
 rule('ParenthesizedInsertColumnList', Sequence('OpenParen', ('InsertColumnList', 'columns'), 'CloseParen'))
@@ -144,12 +164,20 @@ rule('InsertColumnList', OneOf(
 	Sequence(('Name', 'this'), 'Comma', ('InsertColumnList', 'next')),
 	'Name'))
 
+rule('InsertRowList', OneOf(
+	Sequence(('ParenthesizedInsertRow', 'this'), 'Comma', ('InsertRowList', 'next')),
+	'ParenthesizedInsertRow'))
+
+rule('ParenthesizedInsertRow', Sequence('OpenParen', ('InsertRow', 'values'), 'CloseParen'))
+rule('InsertRow', OneOf(
+	Sequence(('Expression', 'this'), 'Comma', ('InsertRow', 'next')),
+	'Expression'))
+
+rule('Expression', OneOf('String', 'Integer', 'Float', 'Name'))
+
 for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
-rule('Name', Name())
-rule('Semicolon', Semicolon())
-rule('Comma', Comma())
-rule('OpenParen', OpenParen())
-rule('CloseParen', CloseParen())
-rule('Epsilon', Epsilon())
+for terminal in ('Name', 'Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Integer', 'String', 'Float', 'Epsilon'):
+	rule(terminal, globals()[terminal]())
+
 postlude()
