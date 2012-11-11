@@ -3,8 +3,8 @@ import java.util.*;
 import sqlengine_a1.parser.*;
 
 public class SqlConsole {
-    public static void main(String[] args) {
-        Scanner stdin = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner stdin = new Scanner(System.in);
 		while (true) {
 			System.out.print("|> ");
 			String line = stdin.nextLine();
@@ -20,6 +20,6 @@ public class SqlConsole {
 			catch (ParseError e) {
 				System.err.println("Parse error: " + e);
 			}
-        }
-    }
+		}
+	}
 }
