@@ -5,7 +5,7 @@ prelude()
 
 rule('Statement', OneOf(
 	'InsertStatement', 'SelectStatement',
-	'DropTableStatement',
+	'DropTableStatement', 'CreateTableStatement',
 	'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement',
 	'QuitStatement'))
 
@@ -34,7 +34,7 @@ rule('SelectStatement', Sequence(
 	'SelectKeyword', Definite(),
 	('MaybeColumnSet', 'columns'),
 	'FromKeyword',
-	('Name', 'table-name'),
+	('Name', 'tablename'),
 	'Semicolon'))
 rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
 
@@ -67,9 +67,36 @@ rule('QuitStatement', Sequence(
 	'QuitKeyword', Definite(),
 	'Semicolon'))
 
+rule('CreateTableStatement', Sequence(
+	'CreateKeyword', 'TableKeyword', Definite(),
+	('Name', 'tablename'),
+	'OpenParen',
+	('FieldDefList', 'columns'),
+	'CloseParen',
+	'Semicolon'))
+rule('FieldDefList', OneOf(
+	Sequence(('FieldDef', 'this'), 'Comma', ('FieldDefList', 'next')),
+	'FieldDef'))
+rule('FieldDef', Sequence(
+	('Name', 'columnname'),
+	('Name', 'type'),
+	('ColumnLength', 'length'),
+	('ColumnNullity', 'nullity')))
+rule('ColumnLength', OneOf(
+	Sequence('OpenParen', ('Integer', 'length'), 'CloseParen'),
+	'Epsilon'))
+rule('ColumnNullable', Sequence(
+	'NullKeyword'))
+rule('ColumnNotNullable', Sequence(
+	'NotKeyword', 'NullKeyword'))
+rule('ColumnNullity', OneOf(
+	'ColumnNullable',
+	'ColumnNotNullable',
+	'Epsilon'))
+
 rule('Expression', OneOf('String', 'Integer', 'Float', 'Name'))
 
-for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT"):
+for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
 for terminal in ('Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk'):
 	rule(terminal, StaticTerminal(terminal))

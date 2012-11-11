@@ -15,12 +15,13 @@ public ASTNode parseStatement() throws ParseError {
 try { return parseInsertStatement(); } catch (MaybeParseError e) {}
 try { return parseSelectStatement(); } catch (MaybeParseError e) {}
 try { return parseDropTableStatement(); } catch (MaybeParseError e) {}
+try { return parseCreateTableStatement(); } catch (MaybeParseError e) {}
 try { return parseSaveStatement(); } catch (MaybeParseError e) {}
 try { return parseLoadStatement(); } catch (MaybeParseError e) {}
 try { return parseCreateDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseDropDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseQuitStatement(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DropTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'QuitStatement'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DropTableStatement', 'CreateTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'QuitStatement'], next token is " + tokens.get(position));
 }
 public ASTNode parseInsertStatement() throws ParseError {
 int savePos = position;
@@ -122,7 +123,7 @@ try { ASTNode temp = parseMaybeColumnSet(); if (temp != null) rv.subnodes.put("c
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseFromKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("table-name", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tablename", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -205,6 +206,90 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 return rv;
+}
+public ASTNode parseCreateTableStatement() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.CREATE_TABLE_STATEMENT);
+try { parseCreateKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseTableKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tablename", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseOpenParen(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { ASTNode temp = parseFieldDefList(); if (temp != null) rv.subnodes.put("columns", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseCloseParen(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseSemicolon(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+return rv;
+}
+public ASTNode parseFieldDefList() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.FIELD_DEF_LIST);
+try { ASTNode temp = parseFieldDef(); if (temp != null) rv.subnodes.put("this", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseComma(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseFieldDefList(); if (temp != null) rv.subnodes.put("next", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+} catch (MaybeParseError e) {}
+try { return parseFieldDef(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['FieldDef', 'FieldDef'], next token is " + tokens.get(position));
+}
+public ASTNode parseFieldDef() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.FIELD_DEF);
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("columnname", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("type", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseColumnLength(); if (temp != null) rv.subnodes.put("length", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseColumnNullity(); if (temp != null) rv.subnodes.put("nullity", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+}
+public ASTNode parseColumnLength() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.COLUMN_LENGTH);
+try { parseOpenParen(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseInteger(); if (temp != null) rv.subnodes.put("length", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseCloseParen(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+} catch (MaybeParseError e) {}
+try { return parseEpsilon(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['OpenParen', 'Epsilon'], next token is " + tokens.get(position));
+}
+public ASTNode parseColumnNullable() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.COLUMN_NULLABLE);
+try { parseNullKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+}
+public ASTNode parseColumnNotNullable() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.COLUMN_NOT_NULLABLE);
+try { parseNotKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseNullKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+}
+public ASTNode parseColumnNullity() throws ParseError {
+try { return parseColumnNullable(); } catch (MaybeParseError e) {}
+try { return parseColumnNotNullable(); } catch (MaybeParseError e) {}
+try { return parseEpsilon(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['ColumnNullable', 'ColumnNotNullable', 'Epsilon'], next token is " + tokens.get(position));
 }
 public ASTNode parseExpression() throws ParseError {
 try { return parseString(); } catch (MaybeParseError e) {}
@@ -317,6 +402,20 @@ if (t.type == Token.Type.KEYWORD && t.text.equals("QUIT")) {
 position++;
 return new ASTNode(ASTNode.Type.QUIT, "QUIT"); }
 else throw new MaybeParseError("expected QUIT, got " + t);
+}
+public ASTNode parseNotKeyword() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.KEYWORD && t.text.equals("NOT")) {
+position++;
+return new ASTNode(ASTNode.Type.NOT, "NOT"); }
+else throw new MaybeParseError("expected NOT, got " + t);
+}
+public ASTNode parseNullKeyword() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.KEYWORD && t.text.equals("NULL")) {
+position++;
+return new ASTNode(ASTNode.Type.NULL, "NULL"); }
+else throw new MaybeParseError("expected NULL, got " + t);
 }
 public ASTNode parseSemicolon() throws ParseError {
 Token t = tokens.get(position);
