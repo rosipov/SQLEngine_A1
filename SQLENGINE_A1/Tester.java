@@ -8,7 +8,7 @@ public class Tester
 		System.out.println(myInt);
 		System.out.println(secondInt);
 		System.out.println(secondInt.compareTo(myInt));*/
-		Number number = new Number((float) 4.1,3);
-		number.isValid();
+		/*Number number = new Number((float) 4.1,3);
+		number.isValid();*/
 	}
 }

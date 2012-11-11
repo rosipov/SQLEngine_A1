@@ -2,12 +2,6 @@ package sqlengine_a1;
 import java.util.*;
 import sqlengine_a1.parser.*;
 
-class Row {
-	public Data getValue(String columnName) {
-		return new Int(4);
-	}
-}
-
 public class ArbitraryExpression {
 	private ASTNode rootNode;
 	
@@ -25,9 +19,9 @@ public class ArbitraryExpression {
 		/*else if (node.type == ASTNode.Type.FLOAT)
 			return new Number(node.floatValue);
 		else if (node.type == ASTNode.Type.STRING)
-			return new Char(node.stringValue);
+			return new Char(node.stringValue);*/
 		else if (node.type == ASTNode.Type.NAME)
-			return row.getValue(node.stringValue);*/
+			return row.getData(node.stringValue);
 		else if (node.type == ASTNode.Type.LT_COMPARISON)
 			return new Int(evalNode(node.subnodes.get("lhs"), row).compareTo(evalNode(node.subnodes.get("rhs"), row)) < 0? 1 : 0);
 		else if (node.type == ASTNode.Type.GT_COMPARISON)
