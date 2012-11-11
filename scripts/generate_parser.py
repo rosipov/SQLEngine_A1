@@ -3,11 +3,14 @@ from grammar_helpers import *
 
 prelude()
 
-rule('Statement', OneOf('InsertStatement', 'SelectStatement'))
+rule('Statement', OneOf(
+	'InsertStatement', 'SelectStatement',
+	'DropTableStatement',
+	'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement',
+	'QuitStatement'))
 
 rule('InsertStatement', Sequence(
-	'InsertKeyword',
-	Definite(),
+	'InsertKeyword', Definite(),
 	'IntoKeyword',
 	('Name', 'table-name'),
 	('MaybeInsertColumnList', 'columns'),
@@ -28,17 +31,45 @@ rule('InsertRow', OneOf(
 	'Expression'))
 
 rule('SelectStatement', Sequence(
-	'SelectKeyword',
-	Definite(),
+	'SelectKeyword', Definite(),
 	('MaybeColumnSet', 'columns'),
 	'FromKeyword',
 	('Name', 'table-name'),
 	'Semicolon'))
 rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
 
+rule('SaveStatement', Sequence(
+	'SaveOrCommitKeyword', Definite(),
+	'Semicolon'))
+rule('SaveOrCommitKeyword', OneOf('SaveKeyword', 'CommitKeyword'))
+
+rule('LoadStatement', Sequence(
+	'LoadKeyword', Definite(),
+	('Name', 'dbname'),
+	'Semicolon'))
+
+rule('CreateDatabaseStatement', Sequence(
+	'CreateKeyword', 'DatabaseKeyword', Definite(),
+	('Name', 'dbname'),
+	'Semicolon'))
+
+rule('DropDatabaseStatement', Sequence(
+	'DropKeyword', 'DatabaseKeyword', Definite(),
+	('Name', 'dbname'),
+	'Semicolon'))
+
+rule('DropTableStatement', Sequence(
+	'DropKeyword', 'TableKeyword', Definite(),
+	('Name', 'tablename'),
+	'Semicolon'))
+
+rule('QuitStatement', Sequence(
+	'QuitKeyword', Definite(),
+	'Semicolon'))
+
 rule('Expression', OneOf('String', 'Integer', 'Float', 'Name'))
 
-for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE"):
+for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
 for terminal in ('Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk'):
 	rule(terminal, StaticTerminal(terminal))

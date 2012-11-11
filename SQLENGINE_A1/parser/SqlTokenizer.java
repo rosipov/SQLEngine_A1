@@ -5,7 +5,7 @@ public class SqlTokenizer {
 	private String str;
 	private int position;
 	private final String[] allKeywords = {
-		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE"
+		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT"
 	};
 	
 	public SqlTokenizer(String str) {
