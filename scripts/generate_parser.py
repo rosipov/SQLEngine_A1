@@ -13,7 +13,7 @@ rule('Statement', OneOf(
 rule('InsertStatement', Sequence(
 	'InsertKeyword', Definite(),
 	'IntoKeyword',
-	('Name', 'table-name'),
+	('Name', 'tableName'),
 	('MaybeInsertColumnList', 'columns'),
 	'ValuesKeyword',
 	('InsertRowList', 'rows'),
@@ -35,8 +35,8 @@ rule('SelectStatement', Sequence(
 	'SelectKeyword', Definite(),
 	('MaybeColumnSet', 'columns'),
 	'FromKeyword',
-	('Name', 'tablename'),
-	('MaybeWhereClause', 'where-clause'),
+	('Name', 'tableName'),
+	('MaybeWhereClause', 'whereClause'),
 	'Semicolon'))
 rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
 rule('MaybeWhereClause', OneOf('WhereClause', 'Epsilon'))
@@ -48,22 +48,22 @@ rule('SaveOrCommitKeyword', OneOf('SaveKeyword', 'CommitKeyword'))
 
 rule('LoadStatement', Sequence(
 	'LoadKeyword', Definite(),
-	('Name', 'dbname'),
+	('Name', 'dbName'),
 	'Semicolon'))
 
 rule('CreateDatabaseStatement', Sequence(
 	'CreateKeyword', 'DatabaseKeyword', Definite(),
-	('Name', 'dbname'),
+	('Name', 'dbName'),
 	'Semicolon'))
 
 rule('DropDatabaseStatement', Sequence(
 	'DropKeyword', 'DatabaseKeyword', Definite(),
-	('Name', 'dbname'),
+	('Name', 'dbName'),
 	'Semicolon'))
 
 rule('DropTableStatement', Sequence(
 	'DropKeyword', 'TableKeyword', Definite(),
-	('Name', 'tablename'),
+	('Name', 'tableName'),
 	'Semicolon'))
 
 rule('EvalStatement', Sequence(
@@ -77,7 +77,7 @@ rule('QuitStatement', Sequence(
 
 rule('CreateTableStatement', Sequence(
 	'CreateKeyword', 'TableKeyword', Definite(),
-	('Name', 'tablename'),
+	('Name', 'tableName'),
 	'OpenParen',
 	('FieldDefList', 'columns'),
 	'CloseParen',
@@ -86,7 +86,7 @@ rule('FieldDefList', OneOf(
 	Sequence(('FieldDef', 'this'), 'Comma', ('FieldDefList', 'next')),
 	'FieldDef'))
 rule('FieldDef', Sequence(
-	('Name', 'columnname'), Definite(),
+	('Name', 'columnName'), Definite(),
 	('Name', 'type'),
 	('ColumnLength', 'length'),
 	('ColumnNullity', 'nullity')))

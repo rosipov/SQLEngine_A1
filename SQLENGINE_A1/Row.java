@@ -10,6 +10,8 @@ public class Row {
 		this.data = data;
 	}
 	
+	public Table getTable() { return table; }
+	
 	public Data getData(String columnName) {
 		int index = this.table.columnIndex(columnName);
 		return this.data.get(index);

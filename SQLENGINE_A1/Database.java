@@ -5,13 +5,18 @@ import sqlengine_a1.parser.*;
 public class Database {
 	private Map<String, Table> tables;
 	
-	public Database() {
+	private Database() {
 		tables = new HashMap<String, Table>();
 	}
 	
 	public static Database load(String name) {
 		// ...
-		return null;
+		return new Database();
+	}
+	
+	public static Database create(String name) {
+		// ...
+		return new Database();
 	}
 	
 	public void save() {
@@ -20,14 +25,5 @@ public class Database {
 	
 	public void createTable(String name, List<ColumnDefinition> columns) {
 		// ...
-	}
-	
-	public DbResult execStatement(ASTNode rootNode) {
-		if (rootNode.type == ASTNode.Type.CREATE_TABLE_STATEMENT) {
-			String name = rootNode.sub("tablename").stringValue;
-			return null;
-		}
-		
-		else return null;
 	}
 }

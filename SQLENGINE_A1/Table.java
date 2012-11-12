@@ -9,6 +9,8 @@ public class Table {
 		this.columns = columns;
 	}
 	
+	public List<ColumnDefinition> getColumns() { return columns; }
+	
 	public void insertRow(Row row) {
 		// TODO validate
 		rows.add(row);
@@ -22,6 +24,6 @@ public class Table {
 	}
 	
 	public DbResult select(List<String> columnNames, ArbitraryExpression where) {
-		return new DbResult(null, 0);
+		return new DbResult(columnNames, null);
 	}
 }

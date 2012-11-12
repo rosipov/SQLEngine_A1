@@ -31,7 +31,7 @@ try { parseInsertKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseIntoKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("table-name", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { ASTNode temp = parseMaybeInsertColumnList(); if (temp != null) rv.subnodes.put("columns", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -124,9 +124,9 @@ try { ASTNode temp = parseMaybeColumnSet(); if (temp != null) rv.subnodes.put("c
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseFromKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tablename", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
-try { ASTNode temp = parseMaybeWhereClause(); if (temp != null) rv.subnodes.put("where-clause", temp); }
+try { ASTNode temp = parseMaybeWhereClause(); if (temp != null) rv.subnodes.put("whereClause", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -161,7 +161,7 @@ int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.LOAD_STATEMENT);
 try { parseLoadKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbname", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -174,7 +174,7 @@ try { parseCreateKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseDatabaseKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbname", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -187,7 +187,7 @@ try { parseDropKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseDatabaseKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbname", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("dbName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -200,7 +200,7 @@ try { parseDropKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseTableKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tablename", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseSemicolon(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -233,7 +233,7 @@ try { parseCreateKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { parseTableKeyword(); }
 catch (MaybeParseError e) { position = savePos; throw e; }
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tablename", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
 try { parseOpenParen(); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
@@ -263,7 +263,7 @@ throw new MaybeParseError("expected one of ['FieldDef', 'FieldDef'], next token 
 public ASTNode parseFieldDef() throws ParseError {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.FIELD_DEF);
-try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("columnname", temp); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("columnName", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("type", temp); }
 catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
