@@ -41,12 +41,21 @@ public class SqlConsole {
 				}
 			}
 			catch (ParseError e) {
-				System.err.println("Parse error: " + e);
+				System.err.println("Parse error: " + e.getMessage());
+			}
+			catch (SqlException e) {
+				System.err.println("Error executing statement: " + e.getMessage());
 			}
 		}
 	}
 	
-	public static DbResult execStatement(ASTNode rootNode) {
+	public static DbResult execStatement(ASTNode rootNode) throws SqlException {
+		if (db == null
+			&& rootNode.type != ASTNode.Type.CREATE_DATABASE_STATEMENT
+			&& rootNode.type != ASTNode.Type.LOAD_STATEMENT
+			&& rootNode.type != ASTNode.Type.EVAL_STATEMENT)
+			throw new SqlException("no database loaded");
+		
 		if (rootNode.type == ASTNode.Type.CREATE_TABLE_STATEMENT) {
 			String name = rootNode.sub("tableName").stringValue;
 			List<ColumnDefinition> cols = new ArrayList<ColumnDefinition>();
@@ -74,10 +83,38 @@ public class SqlConsole {
 			db.createTable(name, cols);
 			return null;
 		}
+		else if (rootNode.type == ASTNode.Type.CREATE_DATABASE_STATEMENT) {
+			String name = rootNode.sub("dbName").stringValue;
+			db = Database.create(name);
+			return null;
+		}
 		else if (rootNode.type == ASTNode.Type.LOAD_STATEMENT) {
 			String name = rootNode.sub("dbName").stringValue;
 			db = Database.load(name);
 			return null;
+		}
+		else if (rootNode.type == ASTNode.Type.SELECT_STATEMENT) {
+			List<String> cols = null;
+			if (rootNode.subnodes.containsKey("columns")) {
+				cols = new ArrayList<String>();
+				ASTNode thisNode = rootNode.sub("columns");
+				while (true) {
+					ASTNode here = thisNode.type == ASTNode.Type.COLUMN_LIST? thisNode.sub("this") : thisNode;
+					String colName = here.sub("columnName").stringValue;
+					cols.add(colName);
+					if (thisNode.type == ASTNode.Type.COLUMN_LIST)
+						thisNode = thisNode.sub("next");
+					else
+						break;
+				}
+			}
+			String tableName = rootNode.sub("tableName").stringValue;
+			ArbitraryExpression where = rootNode.subnodes.containsKey("whereClause")?
+				new ArbitraryExpression(rootNode.sub("whereClause").sub("condition")) : null;
+			Table table = db.getTable(tableName);
+			if (table == null)
+				throw new SqlException("table does not exist");
+			return db.getTable(tableName).select(cols, where);
 		}
 		else return null;
 	}

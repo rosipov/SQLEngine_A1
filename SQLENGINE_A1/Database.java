@@ -26,4 +26,8 @@ public class Database {
 	public void createTable(String name, List<ColumnDefinition> columns) {
 		// ...
 	}
+	
+	public Table getTable(String name) {
+		return tables.get(name);
+	}
 }
