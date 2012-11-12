@@ -24,6 +24,11 @@ public class Table {
 	}
 	
 	public DbResult select(List<String> columnNames, ArbitraryExpression where) {
-		return new DbResult(columnNames, null);
+		if (columnNames == null) {
+			columnNames = new ArrayList<String>();
+			for (ColumnDefinition col : columns)
+				columnNames.add(col.getName());
+		}
+		return new DbResult(columnNames, new ArrayList<Row>());
 	}
 }

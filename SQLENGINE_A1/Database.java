@@ -23,8 +23,10 @@ public class Database {
 		// ...
 	}
 	
-	public void createTable(String name, List<ColumnDefinition> columns) {
-		// ...
+	public void createTable(String name, List<ColumnDefinition> columns) throws SqlException {
+		if (tables.containsKey(name))
+			throw new SqlException("table already exists");
+		tables.put(name, new Table(columns));
 	}
 	
 	public Table getTable(String name) {

@@ -32,10 +32,12 @@ public class SqlConsole {
 						for (String col : result.getColumnNames()) {
 							System.out.print(col + "  ");
 						}
+						System.out.println();
 						for (Row row : result.getReturnedRows()) {
 							for (String col : result.getColumnNames()) {
 								System.out.print(row.getData(col) + "  ");
 							}
+							System.out.println();
 						}
 					}
 				}
