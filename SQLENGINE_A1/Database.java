@@ -9,17 +9,21 @@ public class Database {
 		tables = new HashMap<String, Table>();
 	}
 	
-	public static Database load(String name) {
+	public static Database load(String name) throws SqlException {
 		// ...
 		return new Database();
 	}
 	
-	public static Database create(String name) {
+	public static Database create(String name) throws SqlException {
 		// ...
 		return new Database();
 	}
 	
-	public void save() {
+	public void save() throws SqlException {
+		// ...
+	}
+	
+	public static void drop(String name) throws SqlException {
 		// ...
 	}
 	
@@ -27,6 +31,9 @@ public class Database {
 		if (tables.containsKey(name))
 			throw new SqlException("table already exists");
 		tables.put(name, new Table(columns));
+	}
+	
+	public void dropTable(String name) throws SqlException {
 	}
 	
 	public Table getTable(String name) {

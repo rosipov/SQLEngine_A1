@@ -55,6 +55,7 @@ public class SqlConsole {
 		if (db == null
 			&& rootNode.type != ASTNode.Type.CREATE_DATABASE_STATEMENT
 			&& rootNode.type != ASTNode.Type.LOAD_STATEMENT
+			&& rootNode.type != ASTNode.Type.DROP_DATABASE_STATEMENT
 			&& rootNode.type != ASTNode.Type.EVAL_STATEMENT)
 			throw new SqlException("no database loaded");
 		
@@ -85,6 +86,11 @@ public class SqlConsole {
 			db.createTable(name, cols);
 			return null;
 		}
+		else if (rootNode.type == ASTNode.Type.DROP_TABLE_STATEMENT) {
+			String name = rootNode.sub("tableName").stringValue;
+			db.dropTable(name);
+			return null;
+		}
 		else if (rootNode.type == ASTNode.Type.CREATE_DATABASE_STATEMENT) {
 			String name = rootNode.sub("dbName").stringValue;
 			db = Database.create(name);
@@ -93,6 +99,15 @@ public class SqlConsole {
 		else if (rootNode.type == ASTNode.Type.LOAD_STATEMENT) {
 			String name = rootNode.sub("dbName").stringValue;
 			db = Database.load(name);
+			return null;
+		}
+		else if (rootNode.type == ASTNode.Type.SAVE_STATEMENT) {
+			db.save();
+			return null;
+		}
+		else if (rootNode.type == ASTNode.Type.DROP_DATABASE_STATEMENT) {
+			String name = rootNode.sub("dbName").stringValue;
+			Database.drop(name);
 			return null;
 		}
 		else if (rootNode.type == ASTNode.Type.SELECT_STATEMENT) {
