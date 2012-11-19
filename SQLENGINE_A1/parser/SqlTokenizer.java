@@ -5,7 +5,8 @@ public class SqlTokenizer {
 	private String str;
 	private int position;
 	private final String[] allKeywords = {
-		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL"
+		"INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE",
+		"SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL", "SET"
 	};
 	
 	public SqlTokenizer(String str) {
@@ -49,6 +50,8 @@ public class SqlTokenizer {
 			t.type = Token.Type.OP_LE;
 		else if (s.equals(">="))
 			t.type = Token.Type.OP_GE;
+		else if (s.equals("="))
+			t.type = Token.Type.OP_SINGLE_EQ;
 		else if (s.charAt(0) == '"' || s.charAt(0) == '\'') {
 			t.text = t.text.substring(1, t.text.length() - 1);
 			t.type = Token.Type.STRING;

@@ -35,4 +35,12 @@ public class Table {
 	public DbResult insert(List<Row> rows) {
 		return null;
 	}
+	
+	public DbResult delete(ArbitraryExpression where) {
+		return null;
+	}
+	
+	public DbResult update(List<String> columnNames, List<ArbitraryExpression> values, ArbitraryExpression where) {
+		return null;
+	}
 }

@@ -14,6 +14,8 @@ public class SqlParser {
 public ASTNode parseStatement() throws ParseError {
 try { return parseInsertStatement(); } catch (MaybeParseError e) {}
 try { return parseSelectStatement(); } catch (MaybeParseError e) {}
+try { return parseDeleteStatement(); } catch (MaybeParseError e) {}
+try { return parseUpdateStatement(); } catch (MaybeParseError e) {}
 try { return parseDropTableStatement(); } catch (MaybeParseError e) {}
 try { return parseCreateTableStatement(); } catch (MaybeParseError e) {}
 try { return parseSaveStatement(); } catch (MaybeParseError e) {}
@@ -22,7 +24,7 @@ try { return parseCreateDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseDropDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseEvalStatement(); } catch (MaybeParseError e) {}
 try { return parseQuitStatement(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DropTableStatement', 'CreateTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'EvalStatement', 'QuitStatement'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DeleteStatement', 'UpdateStatement', 'DropTableStatement', 'CreateTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'EvalStatement', 'QuitStatement'], next token is " + tokens.get(position));
 }
 public ASTNode parseInsertStatement() throws ParseError {
 int savePos = position;
@@ -141,6 +143,64 @@ public ASTNode parseMaybeWhereClause() throws ParseError {
 try { return parseWhereClause(); } catch (MaybeParseError e) {}
 try { return parseEpsilon(); } catch (MaybeParseError e) {}
 throw new MaybeParseError("expected one of ['WhereClause', 'Epsilon'], next token is " + tokens.get(position));
+}
+public ASTNode parseDeleteStatement() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.DELETE_STATEMENT);
+try { parseDeleteKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseFromKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { ASTNode temp = parseMaybeWhereClause(); if (temp != null) rv.subnodes.put("whereClause", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseSemicolon(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+return rv;
+}
+public ASTNode parseUpdateStatement() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.UPDATE_STATEMENT);
+try { parseUpdateKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("tableName", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseSetKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { ASTNode temp = parseUpdateFieldList(); if (temp != null) rv.subnodes.put("updateFields", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { ASTNode temp = parseMaybeWhereClause(); if (temp != null) rv.subnodes.put("whereClause", temp); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+try { parseSemicolon(); }
+catch (MaybeParseError e) { position = savePos; throw new DefiniteParseError(e.getMessage()); }
+return rv;
+}
+public ASTNode parseUpdateFieldList() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.UPDATE_FIELD_LIST);
+try { ASTNode temp = parseUpdateField(); if (temp != null) rv.subnodes.put("this", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseComma(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseUpdateField(); if (temp != null) rv.subnodes.put("next", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+} catch (MaybeParseError e) {}
+try { return parseUpdateField(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['UpdateField', 'UpdateField'], next token is " + tokens.get(position));
+}
+public ASTNode parseUpdateField() throws ParseError {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.UPDATE_FIELD);
+try { ASTNode temp = parseName(); if (temp != null) rv.subnodes.put("columnName", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseSingleEqOp(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseExpression(); if (temp != null) rv.subnodes.put("value", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
 }
 public ASTNode parseSaveStatement() throws ParseError {
 int savePos = position;
@@ -539,6 +599,13 @@ position++;
 return new ASTNode(ASTNode.Type.EVAL, "EVAL"); }
 else throw new MaybeParseError("expected EVAL, got " + t);
 }
+public ASTNode parseSetKeyword() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.KEYWORD && t.text.equals("SET")) {
+position++;
+return new ASTNode(ASTNode.Type.SET, "SET"); }
+else throw new MaybeParseError("expected SET, got " + t);
+}
 public ASTNode parseLtOp() throws ParseError {
 Token t = tokens.get(position);
 if (t.type == Token.Type.OP_LT) {
@@ -580,6 +647,13 @@ if (t.type == Token.Type.OP_GE) {
 position++;
 return new ASTNode(ASTNode.Type.OP_GE, t.text); }
 else throw new MaybeParseError("expected GE, got " + t);
+}
+public ASTNode parseSingleEqOp() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.OP_SINGLE_EQ) {
+position++;
+return new ASTNode(ASTNode.Type.OP_SINGLE_EQ, t.text); }
+else throw new MaybeParseError("expected SINGLE_EQ, got " + t);
 }
 public ASTNode parseSemicolon() throws ParseError {
 Token t = tokens.get(position);

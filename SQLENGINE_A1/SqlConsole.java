@@ -131,7 +131,7 @@ public class SqlConsole {
 			Table table = db.getTable(tableName);
 			if (table == null)
 				throw new SqlException("table does not exist");
-			return db.getTable(tableName).select(cols, where);
+			return table.select(cols, where);
 		}
 		else if (rootNode.type == ASTNode.Type.INSERT_STATEMENT) {
 			List<String> cols = null;
@@ -154,8 +154,40 @@ public class SqlConsole {
 			Table table = db.getTable(tableName);
 			if (table == null)
 				throw new SqlException("table does not exist");
-			return db.getTable(tableName).select(cols, where);
+			return table.select(cols, where);
+		}
+		else if (rootNode.type == ASTNode.Type.DELETE_STATEMENT) {
+			String tableName = rootNode.sub("tableName").stringValue;
+			ArbitraryExpression where = rootNode.subnodes.containsKey("whereClause")?
+				new ArbitraryExpression(rootNode.sub("whereClause").sub("condition")) : null;
+			Table table = db.getTable(tableName);
+			if (table == null)
+				throw new SqlException("table does not exist");
+			return table.delete(where);
+		}
+		else if (rootNode.type == ASTNode.Type.UPDATE_STATEMENT) {
+			List<String> cols = new ArrayList<String>();
+			List<ArbitraryExpression> values = new ArrayList<ArbitraryExpression>();
+			ASTNode thisNode = rootNode.sub("updateFields");
+			while (true) {
+				ASTNode here = thisNode.type == ASTNode.Type.UPDATE_FIELD_LIST? thisNode.sub("this") : thisNode;
+				String colName = here.sub("columnName").stringValue;
+				cols.add(colName);
+				ArbitraryExpression value = new ArbitraryExpression(here.sub("value"));
+				values.add(value);
+				if (thisNode.type == ASTNode.Type.UPDATE_FIELD_LIST)
+					thisNode = thisNode.sub("next");
+				else
+					break;
+			}
 			
+			String tableName = rootNode.sub("tableName").stringValue;
+			ArbitraryExpression where = rootNode.subnodes.containsKey("whereClause")?
+				new ArbitraryExpression(rootNode.sub("whereClause").sub("condition")) : null;
+			Table table = db.getTable(tableName);
+			if (table == null)
+				throw new SqlException("table does not exist");
+			return table.update(cols, values, where);
 		}
 		else return null;
 	}

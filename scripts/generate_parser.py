@@ -4,7 +4,7 @@ from grammar_helpers import *
 prelude()
 
 rule('Statement', OneOf(
-	'InsertStatement', 'SelectStatement',
+	'InsertStatement', 'SelectStatement', 'DeleteStatement', 'UpdateStatement',
 	'DropTableStatement', 'CreateTableStatement',
 	'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement',
 	'EvalStatement',
@@ -40,6 +40,28 @@ rule('SelectStatement', Sequence(
 	'Semicolon'))
 rule('MaybeColumnSet', OneOf('ColumnList', 'Asterisk'))
 rule('MaybeWhereClause', OneOf('WhereClause', 'Epsilon'))
+
+rule('DeleteStatement', Sequence(
+	'DeleteKeyword', Definite(),
+	'FromKeyword',
+	('Name', 'tableName'),
+	('MaybeWhereClause', 'whereClause'),
+	'Semicolon'))
+
+rule('UpdateStatement', Sequence(
+	'UpdateKeyword', Definite(),
+	('Name', 'tableName'),
+	'SetKeyword',
+	('UpdateFieldList', 'updateFields'),
+	('MaybeWhereClause', 'whereClause'),
+	'Semicolon'))
+rule('UpdateFieldList', OneOf(
+	Sequence(('UpdateField', 'this'), 'Comma', ('UpdateField', 'next')),
+	'UpdateField'))
+rule('UpdateField', Sequence(
+	('Name', 'columnName'),
+	'SingleEqOp',
+	('Expression', 'value')))
 
 rule('SaveStatement', Sequence(
 	'SaveOrCommitKeyword', Definite(),
@@ -116,10 +138,11 @@ rule('LeComparison', Sequence(('SingleValue', 'lhs'), 'LeOp', ('Comparison', 'rh
 rule('GeComparison', Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rhs')))
 rule('SingleValue', OneOf('String', 'Integer', 'Float', 'Name'))
 
-for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE", "SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL"):
+for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE",
+	"SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL", "SET"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
-for op in ('LT', 'GT', 'EQ', 'NE', 'LE', 'GE'):
-	rule(op.title() + 'Op', Operator(op))
+for op in ('LT', 'GT', 'EQ', 'NE', 'LE', 'GE', 'SINGLE_EQ'):
+	rule(op.title().replace('_', '') + 'Op', Operator(op))
 for terminal in ('Semicolon', 'Comma', 'OpenParen', 'CloseParen', 'Asterisk'):
 	rule(terminal, StaticTerminal(terminal))
 for terminal in ('Name', 'Integer', 'String', 'Float', 'Epsilon'):
