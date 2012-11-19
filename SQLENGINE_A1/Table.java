@@ -31,4 +31,8 @@ public class Table {
 		}
 		return new DbResult(columnNames, new ArrayList<Row>());
 	}
+	
+	public DbResult insert(List<Row> rows) {
+		return null;
+	}
 }

@@ -133,6 +133,30 @@ public class SqlConsole {
 				throw new SqlException("table does not exist");
 			return db.getTable(tableName).select(cols, where);
 		}
+		else if (rootNode.type == ASTNode.Type.INSERT_STATEMENT) {
+			List<String> cols = null;
+			if (rootNode.subnodes.containsKey("columns")) {
+				cols = new ArrayList<String>();
+				ASTNode thisNode = rootNode.sub("columns");
+				while (true) {
+					ASTNode here = thisNode.type == ASTNode.Type.COLUMN_LIST? thisNode.sub("this") : thisNode;
+					String colName = here.sub("columnName").stringValue;
+					cols.add(colName);
+					if (thisNode.type == ASTNode.Type.COLUMN_LIST)
+						thisNode = thisNode.sub("next");
+					else
+						break;
+				}
+			}
+			String tableName = rootNode.sub("tableName").stringValue;
+			ArbitraryExpression where = rootNode.subnodes.containsKey("whereClause")?
+				new ArbitraryExpression(rootNode.sub("whereClause").sub("condition")) : null;
+			Table table = db.getTable(tableName);
+			if (table == null)
+				throw new SqlException("table does not exist");
+			return db.getTable(tableName).select(cols, where);
+			
+		}
 		else return null;
 	}
 }
