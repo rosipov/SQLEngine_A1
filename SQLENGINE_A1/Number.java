@@ -19,6 +19,4 @@ public class Number
 		System.out.println(testString);
 		return true;
 	}
-	
-	
 }

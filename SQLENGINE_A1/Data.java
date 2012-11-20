@@ -21,4 +21,8 @@ public class Data
 		}
 		return 0;
 	}
+	
+	public boolean isTrue() throws SqlException {
+		throw new SqlException("can't use non-ints as boolean values");
+	}
 }

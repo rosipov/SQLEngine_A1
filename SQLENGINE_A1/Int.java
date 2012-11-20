@@ -44,4 +44,7 @@ public class Int extends Data
 		return data + "";
 	}
 	
+	public boolean isTrue() {
+		return (data != 0);
+	}
 }
