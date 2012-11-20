@@ -381,8 +381,7 @@ return rv;
 }
 public ASTNode parseExpression() throws ParseError {
 try { return parseLogicalExpression(); } catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['LogicalExpression', 'SingleValue'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['LogicalExpression'], next token is " + tokens.get(position));
 }
 public ASTNode parseLogicalExpression() throws ParseError {
 try {

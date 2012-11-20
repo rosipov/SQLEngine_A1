@@ -128,7 +128,7 @@ rule('WhereClause', Sequence(
 	'WhereKeyword', Definite(),
 	('Expression', 'condition')))
 
-rule('Expression', OneOf('LogicalExpression', 'SingleValue'))
+rule('Expression', OneOf('LogicalExpression'))
 rule('LogicalExpression', OneOf(
 	Sequence(('NotExpression', 'lhs'), ('LogicalOp', 'operator'), ('LogicalExpression', 'rhs')),
 	'NotExpression'))
