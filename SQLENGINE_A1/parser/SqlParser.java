@@ -388,7 +388,7 @@ public ASTNode parseLogicalExpression() throws ParseError {
 try {
 int savePos = position;
 ASTNode rv = new ASTNode(ASTNode.Type.LOGICAL_EXPRESSION);
-try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("lhs", temp); }
+try { ASTNode temp = parseNotExpression(); if (temp != null) rv.subnodes.put("lhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseLogicalOp(); if (temp != null) rv.subnodes.put("operator", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
@@ -396,8 +396,21 @@ try { ASTNode temp = parseLogicalExpression(); if (temp != null) rv.subnodes.put
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
+try { return parseNotExpression(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['NotExpression', 'NotExpression'], next token is " + tokens.get(position));
+}
+public ASTNode parseNotExpression() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.NOT_EXPRESSION);
+try { parseNotKeyword(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("operand", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+} catch (MaybeParseError e) {}
 try { return parseComparison(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['Comparison', 'Comparison'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['NotKeyword', 'Comparison'], next token is " + tokens.get(position));
 }
 public ASTNode parseLogicalOp() throws ParseError {
 try { return parseAndKeyword(); } catch (MaybeParseError e) {}

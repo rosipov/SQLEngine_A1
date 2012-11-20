@@ -54,6 +54,9 @@ public class ArbitraryExpression {
 				throw new SqlException("unknown logical op (" + op + ")...?");
 			}
 		}
+		else if (node.type == ASTNode.Type.NOT_EXPRESSION) {
+			return new Int(evalNode(node.sub("operand"), row).isTrue()? 0 : 1);
+		}
 		else
 			return null;
 	}

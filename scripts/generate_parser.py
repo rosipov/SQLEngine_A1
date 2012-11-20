@@ -130,7 +130,10 @@ rule('WhereClause', Sequence(
 
 rule('Expression', OneOf('LogicalExpression', 'SingleValue'))
 rule('LogicalExpression', OneOf(
-	Sequence(('Comparison', 'lhs'), ('LogicalOp', 'operator'), ('LogicalExpression', 'rhs')),
+	Sequence(('NotExpression', 'lhs'), ('LogicalOp', 'operator'), ('LogicalExpression', 'rhs')),
+	'NotExpression'))
+rule('NotExpression', OneOf(
+	Sequence('NotKeyword', ('Comparison', 'operand')),
 	'Comparison'))
 rule('LogicalOp', OneOf('AndKeyword', 'OrKeyword'))
 rule('Comparison', OneOf('LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'))
