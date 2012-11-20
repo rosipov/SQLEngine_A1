@@ -136,13 +136,18 @@ rule('NotExpression', OneOf(
 	Sequence('NotKeyword', ('Comparison', 'operand')),
 	'Comparison'))
 rule('LogicalOp', OneOf('AndKeyword', 'OrKeyword', 'XorKeyword'))
-rule('Comparison', OneOf('LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'))
+rule('Comparison', OneOf(
+	'LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison',
+	'ParenthesizedExpression'))
 rule('LtComparison', Sequence(('SingleValue', 'lhs'), 'LtOp', ('Comparison', 'rhs')))
 rule('GtComparison', Sequence(('SingleValue', 'lhs'), 'GtOp', ('Comparison', 'rhs')))
 rule('EqComparison', Sequence(('SingleValue', 'lhs'), 'EqOp', ('Comparison', 'rhs')))
 rule('NeComparison', Sequence(('SingleValue', 'lhs'), 'NeOp', ('Comparison', 'rhs')))
 rule('LeComparison', Sequence(('SingleValue', 'lhs'), 'LeOp', ('Comparison', 'rhs')))
 rule('GeComparison', Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rhs')))
+rule('ParenthesizedExpression', OneOf(
+	Sequence('OpenParen', ('Expression', 'expr'), 'CloseParen'),
+	'SingleValue'))
 rule('SingleValue', OneOf('String', 'Integer', 'Float', 'Name'))
 
 for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE",

@@ -425,8 +425,8 @@ try { return parseEqComparison(); } catch (MaybeParseError e) {}
 try { return parseNeComparison(); } catch (MaybeParseError e) {}
 try { return parseLeComparison(); } catch (MaybeParseError e) {}
 try { return parseGeComparison(); } catch (MaybeParseError e) {}
-try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'], next token is " + tokens.get(position));
+try { return parseParenthesizedExpression(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'ParenthesizedExpression'], next token is " + tokens.get(position));
 }
 public ASTNode parseLtComparison() throws ParseError {
 int savePos = position;
@@ -493,6 +493,21 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 try { ASTNode temp = parseComparison(); if (temp != null) rv.subnodes.put("rhs", temp); }
 catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
+}
+public ASTNode parseParenthesizedExpression() throws ParseError {
+try {
+int savePos = position;
+ASTNode rv = new ASTNode(ASTNode.Type.PARENTHESIZED_EXPRESSION);
+try { parseOpenParen(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { ASTNode temp = parseExpression(); if (temp != null) rv.subnodes.put("expr", temp); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+try { parseCloseParen(); }
+catch (MaybeParseError e) { position = savePos; throw e; }
+return rv;
+} catch (MaybeParseError e) {}
+try { return parseSingleValue(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['OpenParen', 'SingleValue'], next token is " + tokens.get(position));
 }
 public ASTNode parseSingleValue() throws ParseError {
 try { return parseString(); } catch (MaybeParseError e) {}

@@ -62,6 +62,9 @@ public class ArbitraryExpression {
 		else if (node.type == ASTNode.Type.NOT_EXPRESSION) {
 			return new Int(evalNode(node.sub("operand"), row).isTrue()? 0 : 1);
 		}
+		else if (node.type == ASTNode.Type.PARENTHESIZED_EXPRESSION) {
+			return evalNode(node.sub("expr"), row);
+		}
 		else
 			return null;
 	}
