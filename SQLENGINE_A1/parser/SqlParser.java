@@ -415,7 +415,8 @@ throw new MaybeParseError("expected one of ['NotKeyword', 'Comparison'], next to
 public ASTNode parseLogicalOp() throws ParseError {
 try { return parseAndKeyword(); } catch (MaybeParseError e) {}
 try { return parseOrKeyword(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['AndKeyword', 'OrKeyword'], next token is " + tokens.get(position));
+try { return parseXorKeyword(); } catch (MaybeParseError e) {}
+throw new MaybeParseError("expected one of ['AndKeyword', 'OrKeyword', 'XorKeyword'], next token is " + tokens.get(position));
 }
 public ASTNode parseComparison() throws ParseError {
 try { return parseLtComparison(); } catch (MaybeParseError e) {}
@@ -653,6 +654,13 @@ if (t.type == Token.Type.KEYWORD && t.text.equals("OR")) {
 position++;
 return new ASTNode(ASTNode.Type.OR, "OR"); }
 else throw new MaybeParseError("expected OR, got " + t);
+}
+public ASTNode parseXorKeyword() throws ParseError {
+Token t = tokens.get(position);
+if (t.type == Token.Type.KEYWORD && t.text.equals("XOR")) {
+position++;
+return new ASTNode(ASTNode.Type.XOR, "XOR"); }
+else throw new MaybeParseError("expected XOR, got " + t);
 }
 public ASTNode parseLtOp() throws ParseError {
 Token t = tokens.get(position);

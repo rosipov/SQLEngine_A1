@@ -50,6 +50,11 @@ public class ArbitraryExpression {
 				else
 					return new Int(evalNode(node.sub("rhs"), row).isTrue()? 1 : 0);
 			}
+			else if (op == ASTNode.Type.XOR) {
+				boolean a = evalNode(node.sub("lhs"), row).isTrue();
+				boolean b = evalNode(node.sub("rhs"), row).isTrue();
+				return new Int(((a || b) && !(a && b))? 1 : 0);
+			}
 			else {
 				throw new SqlException("unknown logical op (" + op + ")...?");
 			}

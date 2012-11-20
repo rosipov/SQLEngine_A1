@@ -135,7 +135,7 @@ rule('LogicalExpression', OneOf(
 rule('NotExpression', OneOf(
 	Sequence('NotKeyword', ('Comparison', 'operand')),
 	'Comparison'))
-rule('LogicalOp', OneOf('AndKeyword', 'OrKeyword'))
+rule('LogicalOp', OneOf('AndKeyword', 'OrKeyword', 'XorKeyword'))
 rule('Comparison', OneOf('LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'SingleValue'))
 rule('LtComparison', Sequence(('SingleValue', 'lhs'), 'LtOp', ('Comparison', 'rhs')))
 rule('GtComparison', Sequence(('SingleValue', 'lhs'), 'GtOp', ('Comparison', 'rhs')))
@@ -146,7 +146,7 @@ rule('GeComparison', Sequence(('SingleValue', 'lhs'), 'GeOp', ('Comparison', 'rh
 rule('SingleValue', OneOf('String', 'Integer', 'Float', 'Name'))
 
 for kw in ("INSERT", "SELECT", "UPDATE", "DROP", "DELETE", "CREATE", "INTO", "FROM", "VALUES", "TABLE",
-	"SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL", "SET", "AND", "OR"):
+	"SAVE", "COMMIT", "LOAD", "DATABASE", "QUIT", "NOT", "NULL", "WHERE", "EVAL", "SET", "AND", "OR", "XOR"):
 	rule(kw.title() + 'Keyword', Keyword(kw))
 for op in ('LT', 'GT', 'EQ', 'NE', 'LE', 'GE', 'SINGLE_EQ'):
 	rule(op.title().replace('_', '') + 'Op', Operator(op))
