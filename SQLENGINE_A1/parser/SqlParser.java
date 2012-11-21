@@ -24,7 +24,7 @@ try { return parseCreateDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseDropDatabaseStatement(); } catch (MaybeParseError e) {}
 try { return parseEvalStatement(); } catch (MaybeParseError e) {}
 try { return parseQuitStatement(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DeleteStatement', 'UpdateStatement', 'DropTableStatement', 'CreateTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'EvalStatement', 'QuitStatement'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['InsertStatement', 'SelectStatement', 'DeleteStatement', 'UpdateStatement', 'DropTableStatement', 'CreateTableStatement', 'SaveStatement', 'LoadStatement', 'CreateDatabaseStatement', 'DropDatabaseStatement', 'EvalStatement', 'QuitStatement'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseInsertStatement() throws ParseError {
 int savePos = position;
@@ -48,7 +48,7 @@ return rv;
 public ASTNode parseMaybeInsertColumnList() throws ParseError {
 try { return parseParenthesizedInsertColumnList(); } catch (MaybeParseError e) {}
 try { return parseEpsilon(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['ParenthesizedInsertColumnList', 'Epsilon'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['ParenthesizedInsertColumnList', 'Epsilon'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseParenthesizedInsertColumnList() throws ParseError {
 int savePos = position;
@@ -74,7 +74,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseName(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['Name', 'Name'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['Name', 'Name'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseInsertRowList() throws ParseError {
 try {
@@ -89,7 +89,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseParenthesizedInsertRow(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['ParenthesizedInsertRow', 'ParenthesizedInsertRow'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['ParenthesizedInsertRow', 'ParenthesizedInsertRow'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseParenthesizedInsertRow() throws ParseError {
 int savePos = position;
@@ -115,7 +115,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseExpression(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['Expression', 'Expression'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['Expression', 'Expression'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseSelectStatement() throws ParseError {
 int savePos = position;
@@ -137,12 +137,12 @@ return rv;
 public ASTNode parseMaybeColumnSet() throws ParseError {
 try { return parseColumnList(); } catch (MaybeParseError e) {}
 try { return parseAsterisk(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['ColumnList', 'Asterisk'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['ColumnList', 'Asterisk'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseMaybeWhereClause() throws ParseError {
 try { return parseWhereClause(); } catch (MaybeParseError e) {}
 try { return parseEpsilon(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['WhereClause', 'Epsilon'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['WhereClause', 'Epsilon'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseDeleteStatement() throws ParseError {
 int savePos = position;
@@ -189,7 +189,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseUpdateField(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['UpdateField', 'UpdateField'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['UpdateField', 'UpdateField'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseUpdateField() throws ParseError {
 int savePos = position;
@@ -214,7 +214,7 @@ return rv;
 public ASTNode parseSaveOrCommitKeyword() throws ParseError {
 try { return parseSaveKeyword(); } catch (MaybeParseError e) {}
 try { return parseCommitKeyword(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['SaveKeyword', 'CommitKeyword'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['SaveKeyword', 'CommitKeyword'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseLoadStatement() throws ParseError {
 int savePos = position;
@@ -318,7 +318,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseFieldDef(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['FieldDef', 'FieldDef'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['FieldDef', 'FieldDef'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseFieldDef() throws ParseError {
 int savePos = position;
@@ -346,7 +346,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseEpsilon(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['OpenParen', 'Epsilon'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['OpenParen', 'Epsilon'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseColumnNullable() throws ParseError {
 int savePos = position;
@@ -368,7 +368,7 @@ public ASTNode parseColumnNullity() throws ParseError {
 try { return parseColumnNullable(); } catch (MaybeParseError e) {}
 try { return parseColumnNotNullable(); } catch (MaybeParseError e) {}
 try { return parseEpsilon(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['ColumnNullable', 'ColumnNotNullable', 'Epsilon'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['ColumnNullable', 'ColumnNotNullable', 'Epsilon'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseWhereClause() throws ParseError {
 int savePos = position;
@@ -381,7 +381,7 @@ return rv;
 }
 public ASTNode parseExpression() throws ParseError {
 try { return parseLogicalExpression(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['LogicalExpression'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['LogicalExpression'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseLogicalExpression() throws ParseError {
 try {
@@ -396,7 +396,7 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseNotExpression(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['NotExpression', 'NotExpression'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['NotExpression', 'NotExpression'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseNotExpression() throws ParseError {
 try {
@@ -409,13 +409,13 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseComparison(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['NotKeyword', 'Comparison'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['NotKeyword', 'Comparison'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseLogicalOp() throws ParseError {
 try { return parseAndKeyword(); } catch (MaybeParseError e) {}
 try { return parseOrKeyword(); } catch (MaybeParseError e) {}
 try { return parseXorKeyword(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['AndKeyword', 'OrKeyword', 'XorKeyword'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['AndKeyword', 'OrKeyword', 'XorKeyword'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseComparison() throws ParseError {
 try { return parseLtComparison(); } catch (MaybeParseError e) {}
@@ -425,7 +425,7 @@ try { return parseNeComparison(); } catch (MaybeParseError e) {}
 try { return parseLeComparison(); } catch (MaybeParseError e) {}
 try { return parseGeComparison(); } catch (MaybeParseError e) {}
 try { return parseParenthesizedExpression(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'ParenthesizedExpression'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['LtComparison', 'GtComparison', 'EqComparison', 'NeComparison', 'LeComparison', 'GeComparison', 'ParenthesizedExpression'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseLtComparison() throws ParseError {
 int savePos = position;
@@ -506,267 +506,267 @@ catch (MaybeParseError e) { position = savePos; throw e; }
 return rv;
 } catch (MaybeParseError e) {}
 try { return parseSingleValue(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['OpenParen', 'SingleValue'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['OpenParen', 'SingleValue'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseSingleValue() throws ParseError {
 try { return parseString(); } catch (MaybeParseError e) {}
 try { return parseInteger(); } catch (MaybeParseError e) {}
 try { return parseFloat(); } catch (MaybeParseError e) {}
 try { return parseName(); } catch (MaybeParseError e) {}
-throw new MaybeParseError("expected one of ['String', 'Integer', 'Float', 'Name'], next token is " + tokens.get(position));
+throw new MaybeParseError("expected one of ['String', 'Integer', 'Float', 'Name'], next token is " + (position >= tokens.size()? null : tokens.get(position)));
 }
 public ASTNode parseInsertKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("INSERT")) {
 position++;
 return new ASTNode(ASTNode.Type.INSERT, "INSERT"); }
 else throw new MaybeParseError("expected INSERT, got " + t);
 }
 public ASTNode parseSelectKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("SELECT")) {
 position++;
 return new ASTNode(ASTNode.Type.SELECT, "SELECT"); }
 else throw new MaybeParseError("expected SELECT, got " + t);
 }
 public ASTNode parseUpdateKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("UPDATE")) {
 position++;
 return new ASTNode(ASTNode.Type.UPDATE, "UPDATE"); }
 else throw new MaybeParseError("expected UPDATE, got " + t);
 }
 public ASTNode parseDropKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("DROP")) {
 position++;
 return new ASTNode(ASTNode.Type.DROP, "DROP"); }
 else throw new MaybeParseError("expected DROP, got " + t);
 }
 public ASTNode parseDeleteKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("DELETE")) {
 position++;
 return new ASTNode(ASTNode.Type.DELETE, "DELETE"); }
 else throw new MaybeParseError("expected DELETE, got " + t);
 }
 public ASTNode parseCreateKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("CREATE")) {
 position++;
 return new ASTNode(ASTNode.Type.CREATE, "CREATE"); }
 else throw new MaybeParseError("expected CREATE, got " + t);
 }
 public ASTNode parseIntoKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("INTO")) {
 position++;
 return new ASTNode(ASTNode.Type.INTO, "INTO"); }
 else throw new MaybeParseError("expected INTO, got " + t);
 }
 public ASTNode parseFromKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("FROM")) {
 position++;
 return new ASTNode(ASTNode.Type.FROM, "FROM"); }
 else throw new MaybeParseError("expected FROM, got " + t);
 }
 public ASTNode parseValuesKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("VALUES")) {
 position++;
 return new ASTNode(ASTNode.Type.VALUES, "VALUES"); }
 else throw new MaybeParseError("expected VALUES, got " + t);
 }
 public ASTNode parseTableKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("TABLE")) {
 position++;
 return new ASTNode(ASTNode.Type.TABLE, "TABLE"); }
 else throw new MaybeParseError("expected TABLE, got " + t);
 }
 public ASTNode parseSaveKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("SAVE")) {
 position++;
 return new ASTNode(ASTNode.Type.SAVE, "SAVE"); }
 else throw new MaybeParseError("expected SAVE, got " + t);
 }
 public ASTNode parseCommitKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("COMMIT")) {
 position++;
 return new ASTNode(ASTNode.Type.COMMIT, "COMMIT"); }
 else throw new MaybeParseError("expected COMMIT, got " + t);
 }
 public ASTNode parseLoadKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("LOAD")) {
 position++;
 return new ASTNode(ASTNode.Type.LOAD, "LOAD"); }
 else throw new MaybeParseError("expected LOAD, got " + t);
 }
 public ASTNode parseDatabaseKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("DATABASE")) {
 position++;
 return new ASTNode(ASTNode.Type.DATABASE, "DATABASE"); }
 else throw new MaybeParseError("expected DATABASE, got " + t);
 }
 public ASTNode parseQuitKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("QUIT")) {
 position++;
 return new ASTNode(ASTNode.Type.QUIT, "QUIT"); }
 else throw new MaybeParseError("expected QUIT, got " + t);
 }
 public ASTNode parseNotKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("NOT")) {
 position++;
 return new ASTNode(ASTNode.Type.NOT, "NOT"); }
 else throw new MaybeParseError("expected NOT, got " + t);
 }
 public ASTNode parseNullKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("NULL")) {
 position++;
 return new ASTNode(ASTNode.Type.NULL, "NULL"); }
 else throw new MaybeParseError("expected NULL, got " + t);
 }
 public ASTNode parseWhereKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("WHERE")) {
 position++;
 return new ASTNode(ASTNode.Type.WHERE, "WHERE"); }
 else throw new MaybeParseError("expected WHERE, got " + t);
 }
 public ASTNode parseEvalKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("EVAL")) {
 position++;
 return new ASTNode(ASTNode.Type.EVAL, "EVAL"); }
 else throw new MaybeParseError("expected EVAL, got " + t);
 }
 public ASTNode parseSetKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("SET")) {
 position++;
 return new ASTNode(ASTNode.Type.SET, "SET"); }
 else throw new MaybeParseError("expected SET, got " + t);
 }
 public ASTNode parseAndKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("AND")) {
 position++;
 return new ASTNode(ASTNode.Type.AND, "AND"); }
 else throw new MaybeParseError("expected AND, got " + t);
 }
 public ASTNode parseOrKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("OR")) {
 position++;
 return new ASTNode(ASTNode.Type.OR, "OR"); }
 else throw new MaybeParseError("expected OR, got " + t);
 }
 public ASTNode parseXorKeyword() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.KEYWORD && t.text.equals("XOR")) {
 position++;
 return new ASTNode(ASTNode.Type.XOR, "XOR"); }
 else throw new MaybeParseError("expected XOR, got " + t);
 }
 public ASTNode parseLtOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_LT) {
 position++;
 return new ASTNode(ASTNode.Type.OP_LT, t.text); }
 else throw new MaybeParseError("expected LT, got " + t);
 }
 public ASTNode parseGtOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_GT) {
 position++;
 return new ASTNode(ASTNode.Type.OP_GT, t.text); }
 else throw new MaybeParseError("expected GT, got " + t);
 }
 public ASTNode parseEqOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_EQ) {
 position++;
 return new ASTNode(ASTNode.Type.OP_EQ, t.text); }
 else throw new MaybeParseError("expected EQ, got " + t);
 }
 public ASTNode parseNeOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_NE) {
 position++;
 return new ASTNode(ASTNode.Type.OP_NE, t.text); }
 else throw new MaybeParseError("expected NE, got " + t);
 }
 public ASTNode parseLeOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_LE) {
 position++;
 return new ASTNode(ASTNode.Type.OP_LE, t.text); }
 else throw new MaybeParseError("expected LE, got " + t);
 }
 public ASTNode parseGeOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_GE) {
 position++;
 return new ASTNode(ASTNode.Type.OP_GE, t.text); }
 else throw new MaybeParseError("expected GE, got " + t);
 }
 public ASTNode parseSingleEqOp() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OP_SINGLE_EQ) {
 position++;
 return new ASTNode(ASTNode.Type.OP_SINGLE_EQ, t.text); }
 else throw new MaybeParseError("expected SINGLE_EQ, got " + t);
 }
 public ASTNode parseSemicolon() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.SEMICOLON) { position++; return null; }
 else throw new MaybeParseError("expected Semicolon, got " + t);
 }
 public ASTNode parseComma() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.COMMA) { position++; return null; }
 else throw new MaybeParseError("expected Comma, got " + t);
 }
 public ASTNode parseOpenParen() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.OPEN_PAREN) { position++; return null; }
 else throw new MaybeParseError("expected OpenParen, got " + t);
 }
 public ASTNode parseCloseParen() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.CLOSE_PAREN) { position++; return null; }
 else throw new MaybeParseError("expected CloseParen, got " + t);
 }
 public ASTNode parseAsterisk() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.ASTERISK) { position++; return null; }
 else throw new MaybeParseError("expected Asterisk, got " + t);
 }
 public ASTNode parseName() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.NAME) { position++; return new ASTNode(ASTNode.Type.NAME, t.text); }
 else throw new MaybeParseError("expected name, got " + t);
 }
 public ASTNode parseInteger() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.INTEGER) { position++; return new ASTNode(ASTNode.Type.INTEGER, Integer.parseInt(t.text)); }
 else throw new MaybeParseError("expected integer, got " + t);
 }
 public ASTNode parseString() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.STRING) { position++; return new ASTNode(ASTNode.Type.STRING, t.text); }
 else throw new MaybeParseError("expected string, got " + t);
 }
 public ASTNode parseFloat() throws ParseError {
-Token t = tokens.get(position);
+Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }
 if (t.type == Token.Type.FLOAT) { position++; return new ASTNode(ASTNode.Type.FLOAT, Float.parseFloat(t.text)); }
 else throw new MaybeParseError("expected float, got " + t);
 }

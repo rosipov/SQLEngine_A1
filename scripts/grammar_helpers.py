@@ -44,7 +44,7 @@ class OneOf:
 				else:
 					thing.generate()
 				print '} catch (MaybeParseError e) {}'
-		print 'throw new MaybeParseError("expected one of %s, next token is " + tokens.get(position));' % repr(
+		print 'throw new MaybeParseError("expected one of %s, next token is " + (position >= tokens.size()? null : tokens.get(position)));' % repr(
 			[(t if isinstance(t, str) else t.first_thing()) for t in self.things])
 
 class Definite:
@@ -87,7 +87,7 @@ class Keyword:
 		self.kw = kw
 	
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.KEYWORD && t.text.equals("%s")) {' % self.kw
 		print 'position++;'
 		print 'return new ASTNode(ASTNode.Type.%s, "%s"); }' % (self.kw, self.kw)
@@ -98,7 +98,7 @@ class Operator:
 		self.op = op
 	
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.OP_%s) {' % self.op
 		print 'position++;'
 		print 'return new ASTNode(ASTNode.Type.OP_%s, t.text); }' % (self.op)
@@ -106,7 +106,7 @@ class Operator:
 
 class Name:
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.NAME) {'
 		print 'position++;'
 		print 'return new ASTNode(ASTNode.Type.NAME, t.text); }'
@@ -117,31 +117,31 @@ class StaticTerminal:
 		self.name = name
 	
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.%s) { position++; return null; }' % constify_name(self.name)
 		print 'else throw new MaybeParseError("expected %s, got " + t);' % self.name
 
 class Name:
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.NAME) { position++; return new ASTNode(ASTNode.Type.NAME, t.text); }'
 		print 'else throw new MaybeParseError("expected name, got " + t);'
 
 class Integer:
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.INTEGER) { position++; return new ASTNode(ASTNode.Type.INTEGER, Integer.parseInt(t.text)); }'
 		print 'else throw new MaybeParseError("expected integer, got " + t);'
 
 class String:
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.STRING) { position++; return new ASTNode(ASTNode.Type.STRING, t.text); }'
 		print 'else throw new MaybeParseError("expected string, got " + t);'
 
 class Float:
 	def generate(self):
-		print 'Token t = tokens.get(position);'
+		print 'Token t = null; try { t = tokens.get(position); } catch (ArrayIndexOutOfBoundsException e) { throw new MaybeParseError("unexpected EOF"); }'
 		print 'if (t.type == Token.Type.FLOAT) { position++; return new ASTNode(ASTNode.Type.FLOAT, Float.parseFloat(t.text)); }'
 		print 'else throw new MaybeParseError("expected float, got " + t);'
 		
