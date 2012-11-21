@@ -18,4 +18,8 @@ public class Row {
 		int index = this.table.columnIndex(columnName);
 		return this.data.get(index);
 	}
+	
+	public Data getData(int i) {
+		return this.data.get(i);
+	}
 }

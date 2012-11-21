@@ -13,6 +13,7 @@ public class SqlConsole {
 			unRed = (char)0x1b + "[0m";
 		}
 		else {
+			// probably windows console, no color support
 			red = unRed = "";
 		}
 		
@@ -44,8 +45,8 @@ public class SqlConsole {
 						}
 						System.out.println();
 						for (Row row : result.getReturnedRows()) {
-							for (String col : result.getColumnNames()) {
-								System.out.print(row.getData(col) + "  ");
+							for (int i = 0; i < result.getColumnNames().size(); i++) {
+								System.out.print(row.getData(i) + "  ");
 							}
 							System.out.println();
 						}
@@ -127,7 +128,7 @@ public class SqlConsole {
 				ASTNode thisNode = rootNode.sub("columns");
 				while (true) {
 					ASTNode here = thisNode.type == ASTNode.Type.COLUMN_LIST? thisNode.sub("this") : thisNode;
-					String colName = here.sub("columnName").stringValue;
+					String colName = here.stringValue;
 					cols.add(colName);
 					if (thisNode.type == ASTNode.Type.COLUMN_LIST)
 						thisNode = thisNode.sub("next");

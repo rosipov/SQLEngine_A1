@@ -36,7 +36,17 @@ public class Database {
 	public void dropTable(String name) throws SqlException {
 	}
 	
+	public List<String> getTableNames() {
+		ArrayList<String> rv = new ArrayList<String>();
+		rv.add("_tables");
+		for (String t : tables.keySet())
+			rv.add(t);
+		return rv;
+	}
+	
 	public Table getTable(String name) {
+		if (name.equals("_tables"))
+			return new TablesTable(this);
 		return tables.get(name);
 	}
 }

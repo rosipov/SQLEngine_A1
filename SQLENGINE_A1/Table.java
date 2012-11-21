@@ -2,7 +2,7 @@ package sqlengine_a1;
 import java.util.*;
 
 public class Table {
-	private List<ColumnDefinition> columns;
+	protected List<ColumnDefinition> columns;
 	private List<Row> rows;
 	
 	public Table(List<ColumnDefinition> columns) {
@@ -18,7 +18,7 @@ public class Table {
 		return -1;
 	}
 	
-	public DbResult select(List<String> columnNames, ArbitraryExpression where) {
+	public DbResult select(List<String> columnNames, ArbitraryExpression where) throws SqlException {
 		if (columnNames == null) {
 			columnNames = new ArrayList<String>();
 			for (ColumnDefinition col : columns)
@@ -27,15 +27,15 @@ public class Table {
 		return new DbResult(columnNames, new ArrayList<Row>());
 	}
 	
-	public DbResult insert(List<String> columns, List<List<Data>> rows) {
+	public DbResult insert(List<String> columns, List<List<Data>> rows) throws SqlException {
 		return null;
 	}
 	
-	public DbResult delete(ArbitraryExpression where) {
+	public DbResult delete(ArbitraryExpression where) throws SqlException {
 		return null;
 	}
 	
-	public DbResult update(List<String> columnNames, List<ArbitraryExpression> values, ArbitraryExpression where) {
+	public DbResult update(List<String> columnNames, List<ArbitraryExpression> values, ArbitraryExpression where) throws SqlException {
 		return null;
 	}
 }
