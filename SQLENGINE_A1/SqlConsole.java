@@ -137,10 +137,10 @@ public class SqlConsole {
 			List<String> cols = null;
 			if (rootNode.subnodes.containsKey("columns")) {
 				cols = new ArrayList<String>();
-				ASTNode thisNode = rootNode.sub("columns");
+				ASTNode thisNode = rootNode.sub("columns").sub("columns");
 				while (true) {
 					ASTNode here = thisNode.type == ASTNode.Type.COLUMN_LIST? thisNode.sub("this") : thisNode;
-					String colName = here.sub("columnName").stringValue;
+					String colName = here.stringValue;
 					cols.add(colName);
 					if (thisNode.type == ASTNode.Type.COLUMN_LIST)
 						thisNode = thisNode.sub("next");
@@ -148,13 +148,36 @@ public class SqlConsole {
 						break;
 				}
 			}
+			
+			List<List<Data>> rows = new ArrayList<List<Data>>();
+			ASTNode thisNode = rootNode.sub("rows");
+			while (true) {
+				ASTNode here = thisNode.type == ASTNode.Type.INSERT_ROW_LIST? thisNode.sub("this") : thisNode;
+				
+				List<Data> row = new ArrayList<Data>();
+				ASTNode thisField = here.sub("values");
+				while (true) {
+					ASTNode field = thisField.type == ASTNode.Type.INSERT_ROW? thisField.sub("this") : thisField;
+					row.add(new ArbitraryExpression(field).evaluate(null));
+					if (thisField.type == ASTNode.Type.INSERT_ROW)
+						thisField = thisField.sub("next");
+					else
+						break;
+				}
+				
+				rows.add(row);
+				
+				if (thisNode.type == ASTNode.Type.INSERT_ROW_LIST)
+					thisNode = thisNode.sub("next");
+				else
+					break;
+			}
+			
 			String tableName = rootNode.sub("tableName").stringValue;
-			ArbitraryExpression where = rootNode.subnodes.containsKey("whereClause")?
-				new ArbitraryExpression(rootNode.sub("whereClause").sub("condition")) : null;
 			Table table = db.getTable(tableName);
 			if (table == null)
 				throw new SqlException("table does not exist");
-			return table.select(cols, where);
+			return table.insert(cols, rows);
 		}
 		else if (rootNode.type == ASTNode.Type.DELETE_STATEMENT) {
 			String tableName = rootNode.sub("tableName").stringValue;

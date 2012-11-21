@@ -12,6 +12,8 @@ public class Row {
 	
 	public Table getTable() { return table; }
 	
+	public List<Data> getData() { return data; }
+	
 	public Data getData(String columnName) {
 		int index = this.table.columnIndex(columnName);
 		return this.data.get(index);

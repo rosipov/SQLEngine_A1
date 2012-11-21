@@ -32,7 +32,7 @@ public class Table {
 		return new DbResult(columnNames, new ArrayList<Row>());
 	}
 	
-	public DbResult insert(List<Row> rows) {
+	public DbResult insert(List<String> columns, List<List<Data>> rows) {
 		return null;
 	}
 	
