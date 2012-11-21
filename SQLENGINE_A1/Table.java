@@ -11,11 +11,6 @@ public class Table {
 	
 	public List<ColumnDefinition> getColumns() { return columns; }
 	
-	public void insertRow(Row row) {
-		// TODO validate
-		rows.add(row);
-	}
-	
 	public int columnIndex(String columnName) {
 		for (int i = 0; i < columns.size(); i++)
 			if (columns.get(i).getName().equals(columnName))
