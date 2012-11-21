@@ -4,8 +4,18 @@ import sqlengine_a1.parser.*;
 
 public class SqlConsole {
 	private static Database db;
+	private static String red, unRed;
 	
 	public static void main(String[] args) {
+		String term = System.getenv("TERM");
+		if (term != null && term.contains("xterm")) {
+			red = (char)0x1b + "[1;31m";
+			unRed = (char)0x1b + "[0m";
+		}
+		else {
+			red = unRed = "";
+		}
+		
 		Scanner stdin = new Scanner(System.in);
 		while (true) {
 			System.out.print("|> ");
@@ -43,10 +53,10 @@ public class SqlConsole {
 				}
 			}
 			catch (ParseError e) {
-				System.err.println("Parse error: " + e.getMessage());
+				System.err.println(red + "Parse error: " + e.getMessage() + unRed);
 			}
 			catch (SqlException e) {
-				System.err.println("Error executing statement: " + e.getMessage());
+				System.err.println(red + "Error executing statement: " + e.getMessage() + unRed);
 			}
 		}
 	}
