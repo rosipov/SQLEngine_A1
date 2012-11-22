@@ -14,8 +14,10 @@ public class Row {
 	
 	public List<Data> getData() { return data; }
 	
-	public Data getData(String columnName) {
+	public Data getData(String columnName) throws SqlException {
 		int index = this.table.columnIndex(columnName);
+		if (index < 0)
+			throw new SqlException("Column " + columnName + " does not exist in this table");
 		return this.data.get(index);
 	}
 	

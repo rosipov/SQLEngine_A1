@@ -7,6 +7,7 @@ public class TablesTable extends CatalogTable {
 		List<ColumnDefinition> cols = new ArrayList<ColumnDefinition>();
 		cols.add(new ColumnDefinition("table_name", "char", 255, false));
 		cols.add(new ColumnDefinition("column_count", "int", 10, false));
+		cols.add(new ColumnDefinition("row_count", "int", 10, false));
 		this.columns = cols;
 	}
 	
@@ -19,18 +20,26 @@ public class TablesTable extends CatalogTable {
 		
 		List<Row> rows = new ArrayList<Row>();
 		for (String tableName : database.getTableNames()) {
+			Table table = database.getTable(tableName);
+			
+			Row temp = new Row(this, new ArrayList<Data>());
+			temp.getData().add(new Int(1));
+			temp.getData().add(new Int(table.getColumns().size()));
+			temp.getData().add(new Int(table.getRowCount()));
+			if (where != null && !where.evaluate(temp).isTrue())
+				continue;
+			
 			List<Data> data = new ArrayList<Data>();
 			for (String col : columnNames) {
-				if (col.equals("table_name"))
-					data.add(new Int(1));
-				else if (col.equals("column_count"))
-					data.add(new Int(2));
-				else
-					throw new SqlException("Column " + col + " does not exist in this table");
+				data.add(temp.getData(col));
 			}
 			rows.add(new Row(this, data));
 		}
 		
 		return new DbResult(columnNames, rows);
+	}
+	
+	public int getRowCount() {
+		return database.getTableNames().size();
 	}
 }

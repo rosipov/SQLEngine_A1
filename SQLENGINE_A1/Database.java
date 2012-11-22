@@ -39,6 +39,7 @@ public class Database {
 	public List<String> getTableNames() {
 		ArrayList<String> rv = new ArrayList<String>();
 		rv.add("_tables");
+		rv.add("_columns");
 		for (String t : tables.keySet())
 			rv.add(t);
 		return rv;
@@ -47,6 +48,8 @@ public class Database {
 	public Table getTable(String name) {
 		if (name.equals("_tables"))
 			return new TablesTable(this);
+		else if (name.equals("_columns"))
+			return new ColumnsTable(this);
 		return tables.get(name);
 	}
 }

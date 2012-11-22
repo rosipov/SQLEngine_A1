@@ -38,4 +38,8 @@ public class Table {
 	public DbResult update(List<String> columnNames, List<ArbitraryExpression> values, ArbitraryExpression where) throws SqlException {
 		return null;
 	}
+	
+	public int getRowCount() {
+		return rows.size();
+	}
 }
