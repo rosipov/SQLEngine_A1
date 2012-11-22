@@ -24,4 +24,8 @@ public class Row {
 	public Data getData(int i) {
 		return this.data.get(i);
 	}
+	
+	public void setData(int i, Data data){
+	    this.data.set(i, data);
+	}
 }
