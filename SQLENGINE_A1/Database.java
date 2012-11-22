@@ -1,11 +1,12 @@
 package sqlengine_a1;
 import java.util.*;
+import java.io.*;
 import sqlengine_a1.parser.*;
 
-public class Database {
+public class Database implements Serializable {
 	private Map<String, Table> tables;
 	private String name;
-	
+	private static final long serialVersionUID = 319845981645623845L;
 	
 	private Database(String name) {
 		this.name = name;
